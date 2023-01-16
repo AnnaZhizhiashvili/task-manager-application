@@ -1,0 +1,40 @@
+@import '../../../_colors.scss';
+
+
+:host {
+  .task-items {
+    min-height: 100px;
+  }
+  ::ng-deep {
+    .list-container {
+      display: inline-block;
+      background-color: $main-gray;
+      width: 272px;
+      height: 100%;
+      cursor: pointer;
+      .list-wrapper > div:not(:last-child) {
+        margin-bottom: 13px;
+      }
+      &.p-element, .p-card-body{
+        border-radius: 3px;
+      }
+      .p-card-body {
+        background-color: $main-gray;
+        .p-card-content {
+            padding: 12px 0;
+        }
+      }
+      app-task-item {
+        display: block;
+        min-height: 88px;
+        .p-card, .p-card-body {
+          background-color: #fff;
+        }
+        &:not(:last-child) {
+          margin-bottom: 12px;
+        }
+      }
+    }
+  }
+}
+

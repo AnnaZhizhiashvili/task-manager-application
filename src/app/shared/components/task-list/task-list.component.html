@@ -1,0 +1,9 @@
+  <p-card class='list-container'>
+    <div class='list-wrapper'>
+      <div class='list-header'>{{ list.name }}</div>
+      <div class='task-items'  cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListData]='list.tasks'>
+        <app-task-item *ngFor='let task of list.tasks' [task]='task' cdkDrag [cdkDragData]='task'></app-task-item>
+      </div>
+      <div class='list-footer'>footer</div>
+    </div>
+  </p-card>

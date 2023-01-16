@@ -1,0 +1,38 @@
+:host {
+
+  ::ng-deep {
+    .p-card {
+      position: relative;
+      &-body {
+        padding: 6px 8px;
+      }
+      &:hover {
+        transition: all 0.2s ease;
+        filter: brightness(97%);
+        .edit-btn {
+          visibility: visible;
+        }
+      }
+      .edit-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        width: 32px;
+        height: 32px;
+        visibility: hidden;
+      }
+
+    }
+
+    .p-card-footer {
+      text-align: right;
+      padding: 0;
+    }
+    p-badge {
+      &:hover {
+        opacity: 0.7;
+        transition: 0.2s;
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+<p-sidebar [(visible)]="display" styleClass="p-sidebar-sm" [transitionOptions]="'200ms'">Content</p-sidebar>
+
+<div class="fake-nav-wrapper" (click)="display = !display">
+  <div class='fake-navigation'></div>
+  <button pButton pRipple type="button" icon="pi pi-angle-right" class="show-sideMenu-button p-button-rounded p-button-outlined p-button-plain p-button-sm" >
+  </button>
+</div>
+
+
+<div class='lists-container flex gap-3 align-items-start' cdkDropListGroup>
+  <ng-container *ngFor='let list of taskLists' >
+    <app-task-list [list]='list' ></app-task-list>
+  </ng-container>
+</div>
+
+
