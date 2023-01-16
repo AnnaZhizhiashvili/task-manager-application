@@ -4,6 +4,19 @@
       <div class='task-items'  cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListData]='list.tasks'>
         <app-task-item *ngFor='let task of list.tasks' [task]='task' cdkDrag [cdkDragData]='task'></app-task-item>
       </div>
-      <div class='list-footer'>footer</div>
+      <div class='list-footer'>
+        <button *ngIf='!addNewCard; else showTextarea' (click)='addNewCard = !addNewCard' pButton label="Add a card" icon="pi pi-plus" iconPos="left" class="p-button-text p-button-plain add-card"></button>
+        <ng-template #showTextarea>
+          <div>
+            <textarea pInputTextarea  [autoResize]="true" class='new-card-textarea'></textarea>
+            <div>
+              <button pButton type="button" label="Add a card" (click)='addNewCard = !addNewCard'></button>
+              <button pButton type="button" icon="pi pi-times" (click)='addNewCard = !addNewCard' class="p-button-rounded p-button-text p-button-seco" ></button>
+            </div>
+
+          </div>
+
+        </ng-template>
+      </div>
     </div>
   </p-card>

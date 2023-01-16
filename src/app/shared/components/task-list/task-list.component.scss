@@ -34,6 +34,20 @@
           margin-bottom: 12px;
         }
       }
+      .new-card-textarea, .add-card {
+        width: 100%;
+      }
+      .add-card {
+        padding: 8px 12px;
+        &:hover {
+          background-color: #091e4214 !important;
+          color: #172b4d !important;
+        }
+        .p-button-label {
+          text-align: left;
+        }
+
+      }
     }
   }
 }

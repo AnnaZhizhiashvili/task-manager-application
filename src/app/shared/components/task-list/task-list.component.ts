@@ -14,9 +14,9 @@ import { TaskItemInterface } from '../../models/task-item.interface';
 })
 export class TaskListComponent {
   @Input() list: TaskListInterface;
+  public addNewCard = false;
 
   drop(event: CdkDragDrop<TaskItemInterface[]>) {
-    console.log(event.previousContainer === event.container, event);
     if (event.previousContainer === event.container) {
       moveItemInArray(this.list.tasks, event.previousIndex, event.currentIndex);
     } else {
