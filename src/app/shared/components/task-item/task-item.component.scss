@@ -1,6 +1,14 @@
 :host {
 
   ::ng-deep {
+    .p-speeddial-button.p-button.p-button-icon-only {
+      width: 3rem;
+      height: 3rem;
+    }
+    .p-speeddial {
+      display: flex;
+      z-index: 10;
+    }
     .p-card {
       position: relative;
       &-body {
@@ -15,11 +23,11 @@
       }
       .edit-btn {
         position: absolute;
-        top: 5px;
-        right: 5px;
+        top: 0px;
+        right: 12px;
         width: 32px;
         height: 32px;
-        visibility: hidden;
+        visibility: visible;
       }
 
     }
@@ -34,5 +42,7 @@
         transition: 0.2s;
       }
     }
+
+
   }
 }

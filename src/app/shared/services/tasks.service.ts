@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TaskListInterface } from '../models/task-list.interface';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -94,5 +96,12 @@ export class TasksService {
       ],
     },
   ];
-  constructor() {}
+  constructor(private http: HttpClient) {}
+
+  createList(list) {
+    return this.http.post(`${environment.apiUrl}`, list);
+  }
+  getLists() {
+    return this.http.get(`${environment.apiUrl}`);
+  }
 }

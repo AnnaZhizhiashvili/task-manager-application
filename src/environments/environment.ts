@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  apiUrl: 'https://db-json-qtn7.onrender.com',
 };
 
 /*

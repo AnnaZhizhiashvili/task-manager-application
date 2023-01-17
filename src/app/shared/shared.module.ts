@@ -8,6 +8,8 @@ import { BadgeModule } from 'primeng/badge';
 import { BadgeNamePipe } from './badge-name.pipe';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { HttpClientModule } from '@angular/common/http';
+import { SpeedDialModule } from 'primeng/speeddial';
 
 @NgModule({
   declarations: [TaskItemComponent, TaskListComponent, BadgeNamePipe],
@@ -18,6 +20,8 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
     BadgeModule,
     DragDropModule,
     InputTextareaModule,
+    HttpClientModule,
+    SpeedDialModule,
   ],
   exports: [TaskListComponent],
 })
