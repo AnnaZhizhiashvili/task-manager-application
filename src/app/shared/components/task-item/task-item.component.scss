@@ -1,35 +1,33 @@
 :host {
 
   ::ng-deep {
-    .p-speeddial-button.p-button.p-button-icon-only {
-      width: 3rem;
-      height: 3rem;
+    p-speedDial.edit-btn {
+      position: absolute;
+      bottom: 34%;
+      right: 3%;
+      width: 44px;
+      height: 64px;
+      .p-button.p-button-text.p-button-plain:enabled:hover {
+        background: unset;
+      }
+      .p-speeddial-button {
+        border-radius: 3px;
+
+      }
     }
-    .p-speeddial {
-      display: flex;
-      z-index: 10;
-    }
+
     .p-card {
       position: relative;
+      word-wrap: break-word;
+      &:hover {
+        transition: all 0.2s ease;
+        .p-card-body {
+          background: #f1f1f1;
+        }
+      }
       &-body {
         padding: 6px 8px;
       }
-      &:hover {
-        transition: all 0.2s ease;
-        filter: brightness(97%);
-        .edit-btn {
-          visibility: visible;
-        }
-      }
-      .edit-btn {
-        position: absolute;
-        top: 0px;
-        right: 12px;
-        width: 32px;
-        height: 32px;
-        visibility: visible;
-      }
-
     }
 
     .p-card-footer {
@@ -42,7 +40,6 @@
         transition: 0.2s;
       }
     }
-
 
   }
 }

@@ -1,5 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TaskItemInterface } from '../../models/task-item.interface';
+import { ConfirmationService } from 'primeng/api';
+import { TasksService } from '../../services/tasks.service';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-task-item',
@@ -7,8 +10,16 @@ import { TaskItemInterface } from '../../models/task-item.interface';
   styleUrls: ['./task-item.component.scss'],
 })
 export class TaskItemComponent {
+  constructor(
+    private confirmationService: ConfirmationService,
+    private tasksService: TasksService
+  ) {}
+  @Output() onMessage = new EventEmitter<string>();
+
   @Input() task: TaskItemInterface = {
     description: 'task description',
+    id: 111111111,
+    type: 'To Do',
     members: [
       {
         name: 'Ana',
@@ -49,11 +60,17 @@ export class TaskItemComponent {
     {
       icon: 'pi pi-trash',
       command: () => {
-        // this.messageService.add({
-        //   severity: 'error',
-        //   summary: 'Delete',
-        //   detail: 'Data Deleted',
-        // });
+        this.confirmationService.confirm({
+          target: event.target,
+          message: 'Are you sure that you want to proceed?',
+          icon: 'pi pi-exclamation-triangle',
+          accept: () => {
+            this.deleteTask(this.task).subscribe();
+          },
+          reject: () => {
+            this.tasksService.onNotification.next('rejected');
+          },
+        });
       },
     },
     {
@@ -66,9 +83,18 @@ export class TaskItemComponent {
   ];
 
   onShow() {
+    console.log(this.task);
     console.log('show');
   }
   onHide() {
     console.log('hide');
+  }
+  deleteTask(task) {
+    return this.tasksService.deleteTask(task).pipe(
+      tap(() => {
+        this.tasksService.onNotification.next('success');
+        this.tasksService.tasksUpdated.next(task);
+      })
+    );
   }
 }

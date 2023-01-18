@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from '../shared/shared.module';
 import { DragDropModule } from 'primeng/dragdrop';
 import { CdkDropListGroup } from '@angular/cdk/drag-drop';
+import { NotifierModule } from 'angular-notifier';
 
 @NgModule({
   declarations: [DashboardComponent],
@@ -18,6 +19,10 @@ import { CdkDropListGroup } from '@angular/cdk/drag-drop';
     SharedModule,
     DragDropModule,
     CdkDropListGroup,
+    NotifierModule.withConfig({
+      position: { horizontal: { position: 'right' } },
+      behaviour: { autoHide: 2000 },
+    }),
   ],
   exports: [DashboardComponent],
 })

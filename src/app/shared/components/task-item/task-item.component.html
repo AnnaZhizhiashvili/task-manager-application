@@ -1,10 +1,13 @@
 <p-card>
-<!--  <button pButton type="button" icon="pi pi-pencil" class="edit-btn p-button-text p-button-plain" iconPos="left"></button>-->
-  <p-speedDial (onShow)='onShow()' (onHide)='onHide()' [mask]="true" direction="right" [type]="'semi-circle'" [model]="items" [radius]="80" type="button" hideIcon="pi pi-times"  showIcon='pi pi-pencil' buttonClassName="p-button-text p-button-plain" class="edit-btn " iconPos="left"></p-speedDial>
+  <p-speedDial (onShow)='onShow()' (onHide)='onHide()' direction="right" [type]="'semi-circle'" [model]="items" [radius]="60" type="button" hideIcon="pi pi-times"  showIcon='pi pi-pencil' buttonClassName="p-button-text p-button-plain" class="edit-btn " iconPos="left"></p-speedDial>
   <p>{{ task.description }}</p>
+  <p-confirmPopup></p-confirmPopup>
+
   <ng-template pTemplate="footer">
     <p-badge *ngFor='let member of task.members' [severity]="member.color" [value]='[member.name, member.surname] | badgeName'>
     </p-badge>
   </ng-template>
 </p-card>
+
+
 

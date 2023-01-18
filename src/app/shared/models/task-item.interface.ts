@@ -1,6 +1,8 @@
 export interface TaskItemInterface {
+  id: number;
   description: string;
-  members: UserInterface[];
+  type: string;
+  members?: UserInterface[];
 }
 
 interface UserInterface {
