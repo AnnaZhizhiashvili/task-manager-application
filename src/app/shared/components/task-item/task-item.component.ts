@@ -1,20 +1,86 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TaskItemInterface } from '../../models/task-item.interface';
 import { ConfirmationService } from 'primeng/api';
 import { TasksService } from '../../services/tasks.service';
-import { tap } from 'rxjs';
+import { concatMap, from, Observable, of, Subject, tap } from 'rxjs';
+import { ColorTypes } from '../../models/colors.model';
+import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-task-item',
   templateUrl: './task-item.component.html',
   styleUrls: ['./task-item.component.scss'],
 })
-export class TaskItemComponent {
+export class TaskItemComponent implements OnInit {
+  @Output() onMessage = new EventEmitter<string>();
+  colors; // all colors
+  colorsArray = []; //colors that are applied
+  displayLabelEdit = false;
+  dismissableMask = true;
+  colorsForm;
+  colorCheckboxValues;
   constructor(
     private confirmationService: ConfirmationService,
-    private tasksService: TasksService
+    private tasksService: TasksService,
+    private fb: FormBuilder
   ) {}
-  @Output() onMessage = new EventEmitter<string>();
+  ngOnInit() {
+    this.getColors();
+    console.log(this.colors);
+  }
+  closeDialog() {
+    this.displayLabelEdit = !this.displayLabelEdit;
+  }
+  onShowEditDialog() {
+    // if (this.task.labels) {
+    //   this.colorsArray = this.task.labels;
+    //   const colors = this.colorsArray.map(item => item.color);
+    //   this.colors.forEach((item, i) => {
+    //     console.log(item, 'itemmmm');
+    //     if (colors.includes(item.color)) {
+    //       this.colors[i].isSelected = true;
+    //     }
+    //   });
+    // }
+  }
+  onApplyLabels() {
+    console.log(this.colorsArray);
+    this.closeDialog();
+    this.tasksService
+      .editTask({ ...this.task, labels: this.colorsArray })
+      .pipe(
+        tap(task => {
+          this.colorsArray = [];
+          this.colors = this.colors.map(color => ({
+            ...color,
+            isSelected: false,
+          }));
+          console.log(this.colors);
+          this.tasksService.tasksUpdated.next(task);
+        })
+      )
+      .subscribe();
+  }
+  onChangeCheckbox(e) {
+    console.log(e);
+    const changedColor = this.colors.filter(
+      color => color.color === e.source.id
+    )[0];
+
+    if (changedColor) {
+      if (changedColor.isSelected) {
+        this.colorsArray.push(changedColor);
+      } else {
+        const index = this.colorsArray.indexOf(changedColor);
+        this.colorsArray.splice(index, 1);
+      }
+    }
+    console.log(this.colorsArray);
+  }
+
+  getColors() {
+    this.colors = ColorTypes.map(color => ({ ...color, isSelected: false }));
+  }
 
   @Input() task: TaskItemInterface = {
     description: 'task description',
@@ -39,6 +105,7 @@ export class TaskItemComponent {
   public items = [
     {
       icon: 'pi pi-pencil',
+
       command: () => {
         // this.messageService.add({
         //   severity: 'info',
@@ -48,13 +115,12 @@ export class TaskItemComponent {
       },
     },
     {
-      icon: 'pi pi-refresh',
+      icon: 'pi pi-paperclip',
       command: () => {
-        // this.messageService.add({
-        //   severity: 'success',
-        //   summary: 'Update',
-        //   detail: 'Data Updated',
-        // });
+        this.onLabelEdit();
+      },
+      tooltipOptions: {
+        tooltipLabel: 'Change labels',
       },
     },
     {
@@ -78,16 +144,11 @@ export class TaskItemComponent {
     },
     {
       icon: 'pi pi-external-link',
-      url: 'http://angular.io',
     },
   ];
 
-  onShow() {
-    console.log(this.task);
-    console.log('show');
-  }
-  onHide() {
-    console.log('hide');
+  onLabelEdit() {
+    this.displayLabelEdit = true;
   }
   deleteTask(task) {
     return this.tasksService.deleteTask(task).pipe(

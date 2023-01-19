@@ -50,7 +50,11 @@ export class TaskListComponent implements OnInit {
     this.getTasks().subscribe();
     this.tasksService.tasksUpdated
       .pipe(
+        tap(() => {
+          console.log('updateeed');
+        }),
         concatMap((task: TaskItemInterface) => {
+          console.log(task);
           if (task.type === this.list.name) {
             return this.getTasks();
           }

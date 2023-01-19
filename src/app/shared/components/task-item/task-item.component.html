@@ -1,6 +1,45 @@
-<p-card>
-  <p-speedDial (onShow)='onShow()' (onHide)='onHide()' direction="right" [type]="'semi-circle'" [model]="items" [radius]="60" type="button" hideIcon="pi pi-times"  showIcon='pi pi-pencil' buttonClassName="p-button-text p-button-plain" class="edit-btn " iconPos="left"></p-speedDial>
+<p-card class='task-card'>
+  <ng-container *ngIf='task.labels'>
+    <p-header class='task-header'>
+      <div class='color-labels-wrapper flex gap-1'>
+        <span *ngFor='let color of task.labels' class='color-label' [style.background-color]='color.darkBackground' ></span>
+      </div>
+    </p-header>
+  </ng-container>
+
+
+  <p-speedDial direction="right" [type]="'semi-circle'" [model]="items" [radius]="65" type="button" hideIcon="pi pi-times"  showIcon='pi pi-pencil' buttonClassName="p-button-text p-button-plain" class="edit-btn " iconPos="left"></p-speedDial>
   <p>{{ task.description }}</p>
+  <p-dialog (onShow)='onShowEditDialog()' header='Labels' [(visible)]="displayLabelEdit" [modal]='true' [dismissableMask]='dismissableMask'>
+    <p-card class='mb-3 task-card'>
+      <ng-container *ngIf='colorsArray.length'>
+        <p-header class='task-header'>
+          <div class='color-labels-wrapper flex gap-1'>
+            <span *ngFor='let color of colorsArray' class='color-label' [style.background-color]='color.darkBackground' ></span>
+          </div>
+        </p-header>
+      </ng-container>
+
+      <p>{{ task.description }}</p>
+    </p-card>
+    <form >
+      <ul class='color-labels-list mt-3'>
+        <li *ngFor='let colorType of colors' class='flex align-items-center gap-2'>
+          <mat-checkbox type="checkbox" (change)='onChangeCheckbox($event)' name='labelsGroup'  [id]="colorType?.color" value='true'[(ngModel)]='colorType.isSelected' ></mat-checkbox>
+          <label [style.background-color]=colorType.background [for]='colorType.color' class='color-label'>
+            <span [style.background-color]='colorType.darkBackground'></span>
+          </label>
+        </li>
+      </ul>
+    </form>
+
+    <div class='action-btns flex justify-content-between'>
+      <button pButton type="button"  class="p-button-danger p-button-outlined" (click)='closeDialog()'>Cancel</button>
+      <button pButton type="button"  class="p-button" (click)='onApplyLabels()'>Apply</button>
+    </div>
+
+  </p-dialog>
+
   <p-confirmPopup></p-confirmPopup>
 
   <ng-template pTemplate="footer">
