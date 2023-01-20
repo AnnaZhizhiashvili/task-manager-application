@@ -1,145 +1,33 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { TaskItemInterface } from '../../models/task-item.interface';
 import { ConfirmationService } from 'primeng/api';
 import { TasksService } from '../../services/tasks.service';
-import { concatMap, from, Observable, of, Subject, tap } from 'rxjs';
+import { tap } from 'rxjs';
 import { ColorTypes } from '../../models/colors.model';
-import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-task-item',
   templateUrl: './task-item.component.html',
   styleUrls: ['./task-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskItemComponent implements OnInit {
+  @Input() task: TaskItemInterface;
   @Output() onMessage = new EventEmitter<string>();
   colors; // all colors
-  colorsArray = []; //colors that are applied
   displayLabelEdit = false;
   dismissableMask = true;
   colorsArr = ColorTypes;
+  appliedColors = []; //colors that are applied
   form;
-  colorsForm;
-  colorCheckboxValues;
-  constructor(
-    private confirmationService: ConfirmationService,
-    private tasksService: TasksService,
-    private fb: FormBuilder
-  ) {}
-  ngOnInit() {
-    this.getColors();
-    this.addLabelColorControls();
-
-    this.form = this.fb.group({
-      labelColors: this.fb.array(this.colorsArr.map(e => !1)),
-    });
-  }
-  closeDialog() {
-    this.displayLabelEdit = !this.displayLabelEdit;
-  }
-  onLabelEditCancel() {
-    this.closeDialog();
-    this.form.reset();
-  }
-  addLabelColorControls() {
-    const arr = this.colorsArr.map(el => this.fb.control(false));
-    return this.fb.array(arr);
-  }
-  // get labelColorControls(): FormArray {
-  //   return this.form.get('labelColors');
-  // }
-
-  onShowEditDialog() {
-    if (this.task.labels) {
-      this.colorsArray = this.task.labels;
-      console.log(this.colorsArray, 'არრა');
-      console.log(this.colorsArr);
-      const allColors = this.colorsArr.map(el => el.color);
-      this.colorsArray.forEach(el => {
-        const indexOfExistedColor = allColors.indexOf(el.color);
-        if (indexOfExistedColor !== -1) {
-          console.log(indexOfExistedColor);
-          console.log(
-            this.form.get('labelColors').controls[indexOfExistedColor]
-          );
-          this.form
-            .get('labelColors')
-            .controls[indexOfExistedColor].setValue(true);
-        }
-      });
-      // const colors = this.colorsArray.map(item => item.color);
-      // this.colors.forEach((item, i) => {
-      //   console.log(item, 'itemmmm');
-      //   if (colors.includes(item.color)) {
-      //     this.colors[i].isSelected = true;
-      //   }
-      // });
-    }
-  }
-  onApplyLabels() {
-    this.closeDialog();
-    this.tasksService
-      .editTask({ ...this.task, labels: this.colorsArray })
-      .pipe(
-        tap(task => {
-          this.form.reset();
-          this.tasksService.tasksUpdated.next(task);
-        })
-      )
-      .subscribe();
-  }
-
-  resetLabelEdit() {
-    this.colorsArray = [];
-    this.colors = this.colors.map(color => ({
-      ...color,
-      isSelected: false,
-    }));
-  }
-  onChangeCheckbox(e) {
-    const changedColor = this.colorsArr.filter(
-      color => color.color === e.source.id
-    )[0];
-
-    if (changedColor) {
-      if (e.checked) {
-        this.colorsArray.push(changedColor);
-      } else {
-        console.log(changedColor);
-        const index = this.colorsArray.findIndex(
-          item => item.color === changedColor.color
-        );
-        console.log(index);
-        this.colorsArray.splice(index, 1);
-        console.log(this.colorsArray);
-      }
-    }
-  }
-
-  getColors() {
-    this.colors = ColorTypes.map(color => ({ ...color, isSelected: false }));
-  }
-
-  @Input() task: TaskItemInterface = {
-    description: 'task description',
-    id: 111111111,
-    type: 'To Do',
-    members: [
-      {
-        name: 'Ana',
-        surname: 'Zhizhiashvili',
-        mail: 'AnaZhizhiashvili@gmail.com',
-        color: 'warning',
-      },
-      {
-        name: 'Mariam',
-        surname: 'Bakhurauli',
-        mail: 'MariamBakhurauli@gmail.com',
-        color: 'info',
-      },
-    ],
-  };
-
   public items = [
     {
       icon: 'pi pi-pencil',
@@ -178,15 +66,73 @@ export class TaskItemComponent implements OnInit {
       },
     },
     {
-      icon: 'pi pi-upload',
+      icon: 'pi pi-arrow-right',
+      tooltipOptions: {
+        tooltipLabel: 'Move',
+      },
     },
     {
       icon: 'pi pi-external-link',
     },
   ];
 
-  onLabelEdit() {
-    this.displayLabelEdit = true;
+  constructor(
+    private confirmationService: ConfirmationService,
+    private tasksService: TasksService,
+    private fb: FormBuilder
+  ) {}
+  ngOnInit() {
+    this.form = this.fb.group({
+      labelColors: this.fb.array(this.colorsArr.map(e => !1)),
+    });
+  }
+
+  onShowEditDialog() {
+    if (this.task.labels) {
+      this.appliedColors = this.task.labels;
+      const allColors = this.colorsArr.map(el => el.color);
+      this.appliedColors.forEach(el => {
+        const indexOfExistedColor = allColors.indexOf(el.color);
+        if (indexOfExistedColor !== -1) {
+          this.form
+            .get('labelColors')
+            .controls[indexOfExistedColor].setValue(true);
+        }
+      });
+    }
+  }
+
+  onLabelEditCancel() {
+    this.closeDialog();
+    this.form.reset();
+  }
+
+  onApplyLabels() {
+    this.closeDialog();
+    this.tasksService
+      .editTask({ ...this.task, labels: this.appliedColors })
+      .pipe(
+        tap(task => {
+          this.form.reset();
+          this.tasksService.tasksUpdated.next(task);
+        })
+      )
+      .subscribe();
+  }
+  onChangeCheckbox(e) {
+    const changedColor = this.colorsArr.filter(
+      color => color.color === e.source.id
+    )[0];
+    if (changedColor) {
+      if (e.checked) {
+        this.appliedColors.push(changedColor);
+      } else {
+        const index = this.appliedColors.findIndex(
+          item => item.color === changedColor.color
+        );
+        this.appliedColors.splice(index, 1);
+      }
+    }
   }
   deleteTask(task) {
     return this.tasksService.deleteTask(task).pipe(
@@ -195,5 +141,11 @@ export class TaskItemComponent implements OnInit {
         this.tasksService.tasksUpdated.next(task);
       })
     );
+  }
+  onLabelEdit() {
+    this.displayLabelEdit = true;
+  }
+  closeDialog() {
+    this.displayLabelEdit = !this.displayLabelEdit;
   }
 }

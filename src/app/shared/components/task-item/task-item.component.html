@@ -1,23 +1,13 @@
 <p-card class='task-card'>
-  <ng-container *ngIf='task.labels'>
-    <p-header class='task-header'>
-      <div class='color-labels-wrapper flex gap-1'>
-        <span *ngFor='let color of task.labels' class='color-label' [style.background-color]='color.darkBackground' ></span>
-      </div>
-    </p-header>
+  <ng-container *ngIf='task.labels' [ngTemplateOutlet]='labelColors' [ngTemplateOutletContext]="{$implicit: task.labels}">
   </ng-container>
-
-
   <p-speedDial direction="right" [type]="'semi-circle'" [model]="items" [radius]="65" type="button" hideIcon="pi pi-times"  showIcon='pi pi-pencil' buttonClassName="p-button-text p-button-plain" class="edit-btn " iconPos="left"></p-speedDial>
   <p>{{ task.description }}</p>
   <p-dialog (onShow)='onShowEditDialog()' header='Labels' [(visible)]="displayLabelEdit" [modal]='true' [dismissableMask]='dismissableMask'>
     <p-card class='mb-3 task-card edit-label-card'>
-      <ng-container *ngIf='colorsArray.length'>
-        <p-header class='task-header'>
-          <div class='color-labels-wrapper flex gap-1'>
-            <span *ngFor='let color of colorsArray' class='color-label' [style.background-color]='color.darkBackground' ></span>
-          </div>
-        </p-header>
+      <ng-container *ngIf='appliedColors.length'>
+          <ng-container *ngIf='task.labels' [ngTemplateOutlet]='labelColors' [ngTemplateOutletContext]="{$implicit: task.labels}">
+          </ng-container>
       </ng-container>
 
       <p>{{ task.description }}</p>
@@ -34,16 +24,11 @@
         </li>
       </ul>
     </form>
-
     <div class='action-btns flex justify-content-between'>
       <button pButton type="button"  class="p-button-danger p-button-outlined" (click)='onLabelEditCancel()'>Cancel</button>
       <button pButton type="button"  class="p-button" (click)='onApplyLabels()'>Apply</button>
     </div>
-
   </p-dialog>
-
-  <p-confirmPopup></p-confirmPopup>
-
   <ng-template pTemplate="footer">
     <p-badge *ngFor='let member of task.members' [severity]="member.color" [value]='[member.name, member.surname] | badgeName'>
     </p-badge>
@@ -51,4 +36,12 @@
 </p-card>
 
 
+<ng-template #labelColors let-colors>
+  <p-header class='task-header'>
+    <div class='color-labels-wrapper flex gap-1'>
+      <span *ngFor='let color of colors' class='color-label' [style.background-color]='color.darkBackground' ></span>
+    </div>
+  </p-header>
+</ng-template>
 
+<p-confirmPopup></p-confirmPopup>
