@@ -8,9 +8,13 @@
 
 
 <div class='lists-container flex gap-3 align-items-start' cdkDropListGroup>
-  <ng-container *ngFor='let list of taskLists' >
-    <app-task-list [list]='list'></app-task-list>
+
+  <ng-container *ngIf='(taskLists$ | async) as taskLists'>
+    <app-task-list [list]='list' *ngFor='let list of taskLists' ></app-task-list>
   </ng-container>
+
+  <button icon="pi pi-plus" pButton type="button" label="Add a new list" class="p-button-plain add-new-list-btn"></button>
+
 </div>
 
 <notifier-container></notifier-container>

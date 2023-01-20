@@ -3,7 +3,18 @@
 :host {
   .lists-container {
     display: block;
-    margin: 100px;
+    padding: 50px 100px;
+  }
+  .add-new-list-btn {
+    width: 272px;
+    background: rgba(255,255,255, 0.25);
+    border: unset;
+    text-align: left;
+    transition: 0.2s all ease-out;
+    &:hover {
+      background: rgba(255, 255, 255, 0.45);
+    }
+
   }
 
   .fake-nav-wrapper {
@@ -13,7 +24,7 @@
     .fake-navigation {
       height: 100vh;
       width: 16px;
-      background-color: $main-gray;
+      background: rgba(255,255,255, 0.20);
       border-right: 1px solid var(--dynamic-text-color-transparent, #DFE1E6);
       box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
       z-index: -1;

@@ -13,6 +13,7 @@ import {
 import { TaskItemInterface } from '../../models/task-item.interface';
 import { TasksService } from '../../services/tasks.service';
 import { concatMap, of, Subject, tap } from 'rxjs';
+import { HelperService } from '../../services/helper.service';
 
 @Component({
   selector: 'app-task-list',
@@ -21,7 +22,10 @@ import { concatMap, of, Subject, tap } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskListComponent implements OnInit {
-  constructor(private tasksService: TasksService) {}
+  constructor(
+    private tasksService: TasksService,
+    private helperService: HelperService
+  ) {}
   @Input() list: TaskListInterface;
   public addNewCard = false;
   public newTaskDescription: string;
@@ -46,15 +50,10 @@ export class TaskListComponent implements OnInit {
     this.editTask(newTask).subscribe();
   }
   ngOnInit() {
-    const list: TaskListInterface = { name: 'new List', index: 2, tasks: [] };
     this.getTasks().subscribe();
     this.tasksService.tasksUpdated
       .pipe(
-        tap(() => {
-          console.log('updateeed');
-        }),
         concatMap((task: TaskItemInterface) => {
-          console.log(task);
           if (task.type === this.list.name) {
             return this.getTasks();
           }
@@ -66,7 +65,7 @@ export class TaskListComponent implements OnInit {
   public addNewTask() {
     this.addNewCard = !this.addNewCard;
     const newTask: TaskItemInterface = {
-      id: this.tasksService.uniqueID(),
+      id: this.helperService.uniqueID(),
       description: this.newTaskDescription,
       type: this.list.name,
     };

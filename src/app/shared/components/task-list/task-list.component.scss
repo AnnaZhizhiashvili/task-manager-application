@@ -15,6 +15,10 @@
       .list-wrapper > div:not(:last-child) {
         margin-bottom: 13px;
       }
+      .list-header{
+        color: #000;
+        font-weight: 500;
+      }
       &.p-element, .p-card-body{
         border-radius: 3px;
       }
