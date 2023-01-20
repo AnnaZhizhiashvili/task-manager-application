@@ -52,7 +52,7 @@ export class TaskItemComponent implements OnInit {
   onShowEditDialog() {
     if (this.task.labels) {
       this.colorsArray = this.task.labels;
-      console.log(this.colorsArray);
+      console.log(this.colorsArray, 'არრა');
       console.log(this.colorsArr);
       const allColors = this.colorsArr.map(el => el.color);
       this.colorsArray.forEach(el => {
@@ -105,8 +105,13 @@ export class TaskItemComponent implements OnInit {
       if (e.checked) {
         this.colorsArray.push(changedColor);
       } else {
-        const index = this.colorsArray.indexOf(changedColor);
+        console.log(changedColor);
+        const index = this.colorsArray.findIndex(
+          item => item.color === changedColor.color
+        );
+        console.log(index);
         this.colorsArray.splice(index, 1);
+        console.log(this.colorsArray);
       }
     }
   }
