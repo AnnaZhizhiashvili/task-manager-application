@@ -10,10 +10,13 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { HttpClientModule } from '@angular/common/http';
 import { SpeedDialModule } from 'primeng/speeddial';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ConfirmationService } from 'primeng/api';
 import { NotifierModule } from 'angular-notifier';
+import { DialogModule } from 'primeng/dialog';
+import { CheckboxModule } from 'primeng/checkbox';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [TaskItemComponent, TaskListComponent, BadgeNamePipe],
@@ -29,6 +32,10 @@ import { NotifierModule } from 'angular-notifier';
     FormsModule,
     ConfirmPopupModule,
     NotifierModule,
+    DialogModule,
+    CheckboxModule,
+    ReactiveFormsModule,
+    MatCheckboxModule,
   ],
   exports: [TaskListComponent],
   providers: [ConfirmationService],

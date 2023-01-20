@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { find, tap } from 'rxjs';
+import { find, interval, mergeMap, tap } from 'rxjs';
 import { TasksService } from '../../shared/services/tasks.service';
 import { NotifierService } from 'angular-notifier';
 import { NotificationsService } from '../../shared/services/notifications.service';
@@ -22,7 +22,6 @@ export class DashboardComponent implements OnInit {
       .pipe(
         tap(event => {
           if (event === 'success') {
-            console.log('success');
             this.notificationsService.showNotification(
               'success',
               'you have successfully removed the task'

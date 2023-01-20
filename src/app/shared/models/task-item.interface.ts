@@ -3,6 +3,7 @@ export interface TaskItemInterface {
   description: string;
   type: string;
   members?: UserInterface[];
+  labels?: LabelsInterface[];
 }
 
 interface UserInterface {
@@ -10,4 +11,11 @@ interface UserInterface {
   surname: string;
   mail: string;
   color: string;
+}
+
+interface LabelsInterface {
+  color: string;
+  background: string;
+  darkBackground: string;
+  text: string;
 }

@@ -42,12 +42,13 @@
       }
     }
 
+
     .p-card {
       position: relative;
       word-wrap: break-word;
       &:hover {
         transition: all 0.2s ease;
-        .p-card-body {
+        .p-card-body:not(.edit-label-card .p-card-body) {
           background: #f1f1f1;
         }
       }
@@ -98,7 +99,6 @@
       width: 40px;
       height: 8px;
       border-radius: 4px;
-      background: red;
     }
   }
 
