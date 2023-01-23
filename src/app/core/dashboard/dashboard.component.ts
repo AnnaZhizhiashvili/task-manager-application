@@ -1,10 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { find, interval, mergeMap, Observable, Subject, tap } from 'rxjs';
+import {
+  concatMap,
+  find,
+  interval,
+  mergeMap,
+  Observable,
+  Subject,
+  tap,
+} from 'rxjs';
 import { TasksService } from '../../shared/services/tasks.service';
 import { NotifierService } from 'angular-notifier';
 import { NotificationsService } from '../../shared/services/notifications.service';
 import { ListsService } from '../../shared/services/lists.service';
 import { TaskListInterface } from '../../shared/models/task-list.interface';
+import { HelperService } from '../../shared/services/helper.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,15 +22,18 @@ import { TaskListInterface } from '../../shared/models/task-list.interface';
 })
 export class DashboardComponent implements OnInit {
   public display = false;
+  addingNewListMode = false;
   public taskLists$ = new Subject<TaskListInterface[]>();
+  public newListValue: string;
   public message;
   constructor(
     private tasksService: TasksService,
     private listsService: ListsService,
-    private notificationsService: NotificationsService
+    private notificationsService: NotificationsService,
+    private helperService: HelperService
   ) {}
   ngOnInit() {
-    this.getLists();
+    this.getLists().subscribe();
     this.tasksService.onNotification
       .pipe(
         tap(event => {
@@ -37,9 +49,24 @@ export class DashboardComponent implements OnInit {
   }
 
   getLists() {
-    this.listsService
+    return this.listsService
       .getLists()
-      .pipe(tap((lists: TaskListInterface[]) => this.taskLists$.next(lists)))
+      .pipe(tap((lists: TaskListInterface[]) => this.taskLists$.next(lists)));
+  }
+
+  addNewList() {
+    this.addingNewListMode = !this.addingNewListMode;
+    const newList: TaskListInterface = {
+      name: this.newListValue,
+      id: this.helperService.uniqueID(),
+    };
+    this.listsService
+      .createList(newList)
+      .pipe(concatMap(() => this.getLists()))
       .subscribe();
+  }
+
+  newItemValueChanged(val) {
+    this.newListValue = val;
   }
 }

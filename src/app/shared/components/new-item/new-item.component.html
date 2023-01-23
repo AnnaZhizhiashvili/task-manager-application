@@ -1,0 +1,24 @@
+  <div *ngIf='type === "textarea"; else inputType' >
+    <textarea [(ngModel)]='value' (input)='onValueChange()' pInputTextarea  [autoResize]="true" class='new-card-textarea' [placeholder]="placeHolder"></textarea>
+    <div>
+      <button pButton type="button" [label]="btnText" class='mr-1' (click)='onClickAdd()'></button>
+      <button pButton pRipple type="button" icon="pi pi-times" class="icon-btn p-button-rounded p-button-text p-button-secondary" (click)='cancel()'></button>
+    </div>
+  </div>
+
+<ng-template #inputType>
+  <p-card>
+    <div>
+      <input type="text" pInputText [placeholder]="placeHolder"  class='mb-2' [(ngModel)]='value' (input)='onValueChange()'>
+      <div>
+        <button pButton type="button" [label]="btnText" class='mr-1' (click)='onClickAdd()'></button>
+        <button pButton pRipple type="button" icon="pi pi-times" class="icon-btn p-button-rounded p-button-text p-button-secondary" (click)='cancel()'></button>
+      </div>
+    </div>
+  </p-card>
+</ng-template>
+
+
+
+
+

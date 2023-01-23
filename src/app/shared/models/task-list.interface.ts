@@ -1,4 +1,4 @@
 export interface TaskListInterface {
-  index: number;
+  id: number;
   name: string;
 }

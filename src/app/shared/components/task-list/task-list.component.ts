@@ -89,4 +89,8 @@ export class TaskListComponent implements OnInit {
   public editTask(task) {
     return this.tasksService.editTask(task);
   }
+  onNewItemValueChange(val) {
+    this.newTaskDescription = val;
+    console.log(this.newTaskDescription);
+  }
 }

@@ -17,9 +17,16 @@ import { NotifierModule } from 'angular-notifier';
 import { DialogModule } from 'primeng/dialog';
 import { CheckboxModule } from 'primeng/checkbox';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { NewItemComponent } from './components/new-item/new-item.component';
+import { InputTextModule } from 'primeng/inputtext';
 
 @NgModule({
-  declarations: [TaskItemComponent, TaskListComponent, BadgeNamePipe],
+  declarations: [
+    TaskItemComponent,
+    TaskListComponent,
+    BadgeNamePipe,
+    NewItemComponent,
+  ],
   imports: [
     CommonModule,
     CardModule,
@@ -36,8 +43,9 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     CheckboxModule,
     ReactiveFormsModule,
     MatCheckboxModule,
+    InputTextModule,
   ],
-  exports: [TaskListComponent],
+  exports: [TaskListComponent, NewItemComponent],
   providers: [ConfirmationService],
 })
 export class SharedModule {}

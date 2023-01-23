@@ -11,7 +11,7 @@ export class ListsService {
   readonly url = `${environment.apiUrl}/lists`;
   constructor(private http: HttpClient) {}
 
-  createList(list) {
+  createList(list: TaskListInterface) {
     return this.http.post(this.url, list);
   }
   getLists(): Observable<TaskListInterface[]> {

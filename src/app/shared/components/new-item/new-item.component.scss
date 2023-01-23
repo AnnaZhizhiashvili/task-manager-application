@@ -1,0 +1,18 @@
+:host {
+  ::ng-deep {
+    button {
+      font-size: 14px;
+      padding: 10px 16px;
+      .icon-btn {
+        color: #42526e;
+      }
+    }
+    .p-card-body {
+      border-radius: 3px;
+      background-color: #ebecf0;
+    }
+    .p-card-content {
+      padding: unset;
+    }
+  }
+}

@@ -11,12 +11,12 @@
         <button *ngIf='!addNewCard; else showTextarea' (click)='addNewCard = !addNewCard' pButton label="Add a task" icon="pi pi-plus" iconPos="left" class="p-button-text p-button-plain add-card"></button>
         <ng-template #showTextarea>
           <div>
-            <textarea pInputTextarea  [autoResize]="true" class='new-card-textarea' [(ngModel)]='newTaskDescription'></textarea>
-            <div>
-              <button pButton type="button" label="Add a task" (click)='addNewTask()'></button>
-              <button pButton type="button" icon="pi pi-times" (click)='addNewCard = !addNewCard' class="p-button-rounded p-button-text p-button-secondary" ></button>
-            </div>
-
+            <app-new-item [type]='"textarea"' [btnText]='"Add a task"' [placeHolder]='"Enter a title for this card..."' (onClickAddBtn)='addNewTask()' (onClickCancel)='addNewCard = !addNewCard' (valueChanged)='onNewItemValueChange($event)'></app-new-item>
+<!--            <textarea pInputTextarea  [autoResize]="true" class='new-card-textarea' [(ngModel)]='newTaskDescription'></textarea>-->
+<!--            <div>-->
+<!--              <button pButton type="button" label="Add a task" (click)='addNewTask()'></button>-->
+<!--              <button pButton type="button" icon="pi pi-times" (click)='addNewCard = !addNewCard' class="p-button-rounded p-button-text p-button-secondary" ></button>-->
+<!--            </div>-->
           </div>
 
         </ng-template>

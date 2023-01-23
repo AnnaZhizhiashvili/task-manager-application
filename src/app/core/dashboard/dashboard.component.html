@@ -8,13 +8,13 @@
 
 
 <div class='lists-container flex gap-3 align-items-start' cdkDropListGroup>
-
   <ng-container *ngIf='(taskLists$ | async) as taskLists'>
     <app-task-list [list]='list' *ngFor='let list of taskLists' ></app-task-list>
   </ng-container>
-
-  <button icon="pi pi-plus" pButton type="button" label="Add a new list" class="p-button-plain add-new-list-btn"></button>
-
+  <button *ngIf='!addingNewListMode; else addingMode' (click)='addingNewListMode = !addingNewListMode' icon="pi pi-plus" pButton type="button" label="Add a new list" class="p-button-plain add-new-list-btn"></button>
+  <ng-template #addingMode>
+    <app-new-item (onClickCancel)='addingNewListMode = !addingNewListMode' (onClickAddBtn)='addNewList()' [type]='"input"' [btnText]='"Add a new List"' [placeHolder]='"Enter list title..."' (valueChanged)='newItemValueChanged($event)'></app-new-item>
+  </ng-template>
 </div>
 
 <notifier-container></notifier-container>
