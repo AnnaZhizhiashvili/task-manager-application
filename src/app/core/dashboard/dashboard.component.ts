@@ -1,15 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  concatMap,
-  find,
-  interval,
-  mergeMap,
-  Observable,
-  Subject,
-  tap,
-} from 'rxjs';
+import { concatMap, Subject, tap } from 'rxjs';
 import { TasksService } from '../../shared/services/tasks.service';
-import { NotifierService } from 'angular-notifier';
 import { NotificationsService } from '../../shared/services/notifications.service';
 import { ListsService } from '../../shared/services/lists.service';
 import { TaskListInterface } from '../../shared/models/task-list.interface';
@@ -25,7 +16,6 @@ export class DashboardComponent implements OnInit {
   addingNewListMode = false;
   public taskLists$ = new Subject<TaskListInterface[]>();
   public newListValue: string;
-  public message;
   constructor(
     private tasksService: TasksService,
     private listsService: ListsService,
@@ -68,5 +58,12 @@ export class DashboardComponent implements OnInit {
 
   newItemValueChanged(val) {
     this.newListValue = val;
+  }
+
+  deleteList(list) {
+    this.listsService
+      .deleteList(list)
+      .pipe(concatMap(() => this.getLists()))
+      .subscribe();
   }
 }

@@ -1,6 +1,18 @@
   <p-card class='list-container'>
-    <div class='list-wrapper'>
+      <p-overlayPanel #op>
+        <ng-template pTemplate>
+          <ul>
+            <li><a (click)='deleteList()'>Archive this list</a></li>
+          </ul>
+        </ng-template>
+      </p-overlayPanel>
+    <div class='flex justify-content-between align-items-center'>
       <div class='list-header'>{{ list.name }}</div>
+      <button pButton icon='pi pi-ellipsis-h' class='settings-btn p-button-text p-button-secondary' (click)="op.toggle($event)"></button>
+    </div>
+
+    <div class='list-wrapper'>
+
       <ng-container *ngIf='(tasks$ | async) as tasks'>
         <div class='task-items' cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListData]='tasks'>
           <app-task-item *ngFor='let task of tasks' [task]='task' cdkDrag [cdkDragData]='task'></app-task-item>
@@ -12,13 +24,7 @@
         <ng-template #showTextarea>
           <div>
             <app-new-item [type]='"textarea"' [btnText]='"Add a task"' [placeHolder]='"Enter a title for this card..."' (onClickAddBtn)='addNewTask()' (onClickCancel)='addNewCard = !addNewCard' (valueChanged)='onNewItemValueChange($event)'></app-new-item>
-<!--            <textarea pInputTextarea  [autoResize]="true" class='new-card-textarea' [(ngModel)]='newTaskDescription'></textarea>-->
-<!--            <div>-->
-<!--              <button pButton type="button" label="Add a task" (click)='addNewTask()'></button>-->
-<!--              <button pButton type="button" icon="pi pi-times" (click)='addNewCard = !addNewCard' class="p-button-rounded p-button-text p-button-secondary" ></button>-->
-<!--            </div>-->
           </div>
-
         </ng-template>
       </div>
     </div>

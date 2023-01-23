@@ -17,4 +17,7 @@ export class ListsService {
   getLists(): Observable<TaskListInterface[]> {
     return this.http.get<TaskListInterface[]>(this.url);
   }
+  deleteList(list) {
+    return this.http.delete(`${this.url}/${list.id}`);
+  }
 }

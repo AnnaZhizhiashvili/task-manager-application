@@ -19,6 +19,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NewItemComponent } from './components/new-item/new-item.component';
 import { InputTextModule } from 'primeng/inputtext';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { InputTextModule } from 'primeng/inputtext';
     ReactiveFormsModule,
     MatCheckboxModule,
     InputTextModule,
+    OverlayPanelModule,
   ],
   exports: [TaskListComponent, NewItemComponent],
   providers: [ConfirmationService],

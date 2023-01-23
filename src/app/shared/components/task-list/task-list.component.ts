@@ -1,8 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  EventEmitter,
   Input,
   OnInit,
+  Output,
 } from '@angular/core';
 import { TaskListInterface } from '../../models/task-list.interface';
 import {
@@ -27,6 +29,7 @@ export class TaskListComponent implements OnInit {
     private helperService: HelperService
   ) {}
   @Input() list: TaskListInterface;
+  @Output() onDeleteList = new EventEmitter();
   public addNewCard = false;
   public newTaskDescription: string;
   public tasks: TaskItemInterface[];
@@ -91,6 +94,9 @@ export class TaskListComponent implements OnInit {
   }
   onNewItemValueChange(val) {
     this.newTaskDescription = val;
-    console.log(this.newTaskDescription);
+  }
+
+  deleteList() {
+    this.onDeleteList.emit(this.list);
   }
 }
