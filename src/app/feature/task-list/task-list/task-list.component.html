@@ -22,9 +22,7 @@
       <div class='list-footer'>
         <button *ngIf='!addNewCard; else showTextarea' (click)='addNewCard = !addNewCard' pButton label="Add a task" icon="pi pi-plus" iconPos="left" class="p-button-text p-button-plain add-card"></button>
         <ng-template #showTextarea>
-          <div>
             <app-new-item [type]='"textarea"' [btnText]='"Add a task"' [placeHolder]='"Enter a title for this card..."' (onClickAddBtn)='addNewTask()' (onClickCancel)='addNewCard = !addNewCard' (valueChanged)='onNewItemValueChange($event)'></app-new-item>
-          </div>
         </ng-template>
       </div>
     </div>

@@ -6,11 +6,11 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { TaskItemInterface } from '../../models/task-item.interface';
+import { TaskItemInterface } from '../../../shared/models/task-item.interface';
 import { ConfirmationService } from 'primeng/api';
-import { TasksService } from '../../services/tasks.service';
+import { TasksService } from '../../../shared/services/tasks.service';
 import { tap } from 'rxjs';
-import { ColorTypes } from '../../models/colors.model';
+import { ColorTypes } from '../../../shared/models/colors.model';
 import { FormBuilder } from '@angular/forms';
 
 @Component({

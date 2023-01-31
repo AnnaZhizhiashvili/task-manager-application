@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TaskItemComponent } from './components/task-item/task-item.component';
-import { TaskListComponent } from './components/task-list/task-list.component';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { BadgeModule } from 'primeng/badge';
@@ -22,12 +20,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 
 @NgModule({
-  declarations: [
-    TaskItemComponent,
-    TaskListComponent,
-    BadgeNamePipe,
-    NewItemComponent,
-  ],
+  declarations: [BadgeNamePipe, NewItemComponent],
   imports: [
     CommonModule,
     CardModule,
@@ -47,7 +40,7 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
     InputTextModule,
     OverlayPanelModule,
   ],
-  exports: [TaskListComponent, NewItemComponent],
+  exports: [NewItemComponent, BadgeNamePipe],
   providers: [ConfirmationService],
 })
 export class SharedModule {}

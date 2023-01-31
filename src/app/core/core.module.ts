@@ -8,6 +8,7 @@ import { SharedModule } from '../shared/shared.module';
 import { DragDropModule } from 'primeng/dragdrop';
 import { CdkDropListGroup } from '@angular/cdk/drag-drop';
 import { NotifierModule } from 'angular-notifier';
+import { TaskListModule } from '../feature/task-list/task-list.module';
 
 @NgModule({
   declarations: [DashboardComponent],
@@ -23,6 +24,7 @@ import { NotifierModule } from 'angular-notifier';
       position: { horizontal: { position: 'right' } },
       behaviour: { autoHide: 2000 },
     }),
+    TaskListModule,
   ],
   exports: [DashboardComponent],
 })

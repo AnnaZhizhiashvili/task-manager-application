@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
+  data: any;
   constructor(private primengConfig: PrimeNGConfig) {}
 
   ngOnInit() {

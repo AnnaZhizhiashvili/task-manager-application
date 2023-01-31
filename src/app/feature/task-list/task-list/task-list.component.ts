@@ -6,16 +6,18 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { TaskListInterface } from '../../models/task-list.interface';
+import { TaskListInterface } from '../../../shared/models/task-list.interface';
 import {
   CdkDragDrop,
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
-import { TaskItemInterface } from '../../models/task-item.interface';
-import { TasksService } from '../../services/tasks.service';
+import { TaskItemInterface } from '../../../shared/models/task-item.interface';
+import { TasksService } from '../../../shared/services/tasks.service';
 import { concatMap, of, Subject, tap } from 'rxjs';
-import { HelperService } from '../../services/helper.service';
+import { HelperService } from '../../../shared/services/helper.service';
+import { ColorTypes } from '../../../shared/models/colors.model';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-task-list',

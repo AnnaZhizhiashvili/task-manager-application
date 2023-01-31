@@ -6,7 +6,7 @@
   <p-dialog (onShow)='onShowEditDialog()' header='Labels' [(visible)]="displayLabelEdit" [modal]='true' [dismissableMask]='dismissableMask'>
     <p-card class='mb-3 task-card edit-label-card'>
       <ng-container *ngIf='appliedColors.length'>
-          <ng-container *ngIf='task.labels' [ngTemplateOutlet]='labelColors' [ngTemplateOutletContext]="{$implicit: task.labels}">
+          <ng-container  [ngTemplateOutlet]='labelColors' [ngTemplateOutletContext]="{$implicit: appliedColors}">
           </ng-container>
       </ng-container>
 
