@@ -17,7 +17,7 @@ import { TasksService } from '../../../shared/services/tasks.service';
 import { concatMap, of, Subject, tap } from 'rxjs';
 import { HelperService } from '../../../shared/services/helper.service';
 import { ColorTypes } from '../../../shared/models/colors.model';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-task-list',
@@ -36,6 +36,7 @@ export class TaskListComponent implements OnInit {
   public newTaskDescription: string;
   public tasks: TaskItemInterface[];
   public tasks$ = new Subject<TaskItemInterface[]>();
+  public newItem = new FormControl('', Validators.required);
 
   drop(event: CdkDragDrop<TaskItemInterface[]>) {
     if (event.previousContainer === event.container) {
@@ -66,6 +67,9 @@ export class TaskListComponent implements OnInit {
         })
       )
       .subscribe();
+    this.newItem.valueChanges.subscribe(
+      value => (this.newTaskDescription = value)
+    );
   }
   public addNewTask() {
     this.addNewCard = !this.addNewCard;
@@ -94,10 +98,6 @@ export class TaskListComponent implements OnInit {
   public editTask(task) {
     return this.tasksService.editTask(task);
   }
-  onNewItemValueChange(val) {
-    this.newTaskDescription = val;
-  }
-
   deleteList() {
     this.onDeleteList.emit(this.list);
   }

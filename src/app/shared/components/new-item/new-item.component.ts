@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-new-item',
@@ -9,6 +10,7 @@ export class NewItemComponent {
   @Input() type: 'input' | 'textarea' = 'input';
   @Input() placeHolder = 'space holder';
   @Input() btnText = 'Add a new item';
+  @Input() control = new FormControl('');
   @Output() onClickCancel = new EventEmitter();
   @Output() onClickAddBtn = new EventEmitter();
   @Output() valueChanged = new EventEmitter();

@@ -1,9 +1,7 @@
 @import '../../../colors';
 
 :host {
-  .task-items {
-    min-height: 100px;
-  }
+  min-width: 232px;
   ::ng-deep {
     .list-container {
       background-color: $main-gray;

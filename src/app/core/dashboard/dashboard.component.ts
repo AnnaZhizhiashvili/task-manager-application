@@ -5,6 +5,7 @@ import { NotificationsService } from '../../shared/services/notifications.servic
 import { ListsService } from '../../shared/services/lists.service';
 import { TaskListInterface } from '../../shared/models/task-list.interface';
 import { HelperService } from '../../shared/services/helper.service';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,6 +17,7 @@ export class DashboardComponent implements OnInit {
   addingNewListMode = false;
   public taskLists$ = new Subject<TaskListInterface[]>();
   public newListValue: string;
+  public newItem = new FormControl('', Validators.required);
   constructor(
     private tasksService: TasksService,
     private listsService: ListsService,
@@ -36,6 +38,10 @@ export class DashboardComponent implements OnInit {
         })
       )
       .subscribe();
+
+    this.newItem.valueChanges.subscribe(value => {
+      this.newListValue = value;
+    });
   }
 
   getLists() {

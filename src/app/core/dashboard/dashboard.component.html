@@ -13,7 +13,7 @@
   </ng-container>
   <button *ngIf='!addingNewListMode; else addingMode' (click)='addingNewListMode = !addingNewListMode' icon="pi pi-plus" pButton type="button" label="Add a new list" class="p-button-plain add-new-list-btn"></button>
   <ng-template #addingMode>
-    <app-new-item (onClickCancel)='addingNewListMode = !addingNewListMode' (onClickAddBtn)='addNewList()' [type]='"input"' [btnText]='"Add a new List"' [placeHolder]='"Enter list title..."' (valueChanged)='newItemValueChanged($event)'></app-new-item>
+    <app-new-item [control]='newItem' (onClickCancel)='addingNewListMode = !addingNewListMode' (onClickAddBtn)='addNewList()' [type]='"input"' [btnText]='"Add a new List"' [placeHolder]='"Enter list title..."'></app-new-item>
   </ng-template>
 </div>
 
