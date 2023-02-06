@@ -13,6 +13,7 @@ import { TaskItemComponent } from './task-item/task-item.component';
 import { BadgeModule } from 'primeng/badge';
 import { SpeedDialModule } from 'primeng/speeddial';
 import { DialogModule } from 'primeng/dialog';
+import { ListboxModule } from 'primeng/listbox';
 
 @NgModule({
   declarations: [TaskListComponent, TaskItemComponent],
@@ -30,6 +31,7 @@ import { DialogModule } from 'primeng/dialog';
     BadgeModule,
     SpeedDialModule,
     DialogModule,
+    ListboxModule,
   ],
   exports: [TaskListComponent],
 })

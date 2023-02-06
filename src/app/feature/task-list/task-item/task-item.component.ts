@@ -3,15 +3,17 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
 } from '@angular/core';
 import { TaskItemInterface } from '../../../shared/models/task-item.interface';
 import { ConfirmationService } from 'primeng/api';
 import { TasksService } from '../../../shared/services/tasks.service';
-import { tap } from 'rxjs';
+import { Subscription, switchMap, tap } from 'rxjs';
 import { ColorTypes } from '../../../shared/models/colors.model';
 import { FormBuilder } from '@angular/forms';
+import { ListsService } from '../../../shared/services/lists.service';
 
 @Component({
   selector: 'app-task-item',
@@ -19,15 +21,18 @@ import { FormBuilder } from '@angular/forms';
   styleUrls: ['./task-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TaskItemComponent implements OnInit {
+export class TaskItemComponent implements OnInit, OnDestroy {
   @Input() task: TaskItemInterface;
   @Output() onMessage = new EventEmitter<string>();
+  public subscriptions: Subscription[];
   colors; // all colors
   displayLabelEdit = false;
+  displayMoveItem = false;
   dismissableMask = true;
   colorsArr = ColorTypes;
   appliedColors = []; //colors that are applied
   form;
+  public selectedList: string;
   public items = [
     {
       icon: 'pi pi-pencil',
@@ -57,7 +62,8 @@ export class TaskItemComponent implements OnInit {
           message: 'Are you sure that you want to proceed?',
           icon: 'pi pi-exclamation-triangle',
           accept: () => {
-            this.deleteTask(this.task).subscribe();
+            const sub = this.deleteTask(this.task).subscribe();
+            this.subscriptions.push(sub);
           },
           reject: () => {
             this.tasksService.onNotification.next('rejected');
@@ -70,6 +76,9 @@ export class TaskItemComponent implements OnInit {
       tooltipOptions: {
         tooltipLabel: 'Move',
       },
+      command: () => {
+        this.onItemMove();
+      },
     },
     {
       icon: 'pi pi-external-link',
@@ -79,6 +88,7 @@ export class TaskItemComponent implements OnInit {
   constructor(
     private confirmationService: ConfirmationService,
     private tasksService: TasksService,
+    private listsService: ListsService,
     private fb: FormBuilder
   ) {}
   ngOnInit() {
@@ -109,7 +119,7 @@ export class TaskItemComponent implements OnInit {
 
   onApplyLabels() {
     this.closeDialog();
-    this.tasksService
+    const sub = this.tasksService
       .editTask({ ...this.task, labels: this.appliedColors })
       .pipe(
         tap(task => {
@@ -118,6 +128,7 @@ export class TaskItemComponent implements OnInit {
         })
       )
       .subscribe();
+    this.subscriptions.push(sub);
   }
   onChangeCheckbox(e) {
     const changedColor = this.colorsArr.filter(
@@ -145,7 +156,40 @@ export class TaskItemComponent implements OnInit {
   onLabelEdit() {
     this.displayLabelEdit = true;
   }
+
+  onItemMove() {
+    this.displayMoveItem = true;
+  }
+  get lists() {
+    return this.listsService.lists;
+  }
+  public onDestinationChange(event) {
+    const oldTask = this.task;
+    const newTask = { ...this.task, type: event.option.name };
+    this.confirmationService.confirm({
+      target: event.originalEvent.target,
+      message: 'Are you sure that you want to move this task  ?',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        const sub = this.tasksService
+          .editTask(newTask)
+          .pipe(
+            tap(() => {
+              this.tasksService.tasksUpdated.next(newTask);
+              this.tasksService.tasksUpdated.next(oldTask);
+            })
+          )
+          .subscribe();
+        this.subscriptions.push(sub);
+      },
+    });
+  }
+
   closeDialog() {
     this.displayLabelEdit = !this.displayLabelEdit;
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }

@@ -3,6 +3,7 @@
 :host {
   display: block;
   width: fit-content;
+  position: relative;
   .lists-container {
     display: block;
     padding: 50px 100px;
@@ -22,9 +23,10 @@
     cursor: pointer;
     position: absolute;
     top: 0;
+    bottom: 0;
     .fake-navigation {
-      height: 100vh;
       width: 16px;
+      height: 100%;
       background: rgba(255, 255, 255, 0.2);
       border-right: 1px solid var(--dynamic-text-color-transparent, #dfe1e6);
       box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px,

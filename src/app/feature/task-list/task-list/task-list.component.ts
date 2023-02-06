@@ -3,6 +3,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
 } from '@angular/core';
@@ -14,7 +15,7 @@ import {
 } from '@angular/cdk/drag-drop';
 import { TaskItemInterface } from '../../../shared/models/task-item.interface';
 import { TasksService } from '../../../shared/services/tasks.service';
-import { concatMap, of, Subject, tap } from 'rxjs';
+import { concatMap, of, Subject, Subscription, tap } from 'rxjs';
 import { HelperService } from '../../../shared/services/helper.service';
 import { ColorTypes } from '../../../shared/models/colors.model';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
@@ -25,7 +26,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
   styleUrls: ['./task-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TaskListComponent implements OnInit {
+export class TaskListComponent implements OnInit, OnDestroy {
   constructor(
     private tasksService: TasksService,
     private helperService: HelperService
@@ -37,6 +38,7 @@ export class TaskListComponent implements OnInit {
   public tasks: TaskItemInterface[];
   public tasks$ = new Subject<TaskItemInterface[]>();
   public newItem = new FormControl('', Validators.required);
+  public subscriptions: Subscription[];
 
   drop(event: CdkDragDrop<TaskItemInterface[]>) {
     if (event.previousContainer === event.container) {
@@ -53,23 +55,27 @@ export class TaskListComponent implements OnInit {
       ...event.item.data,
       type: this.list.name,
     };
-    this.editTask(newTask).subscribe();
+    const sub = this.editTask(newTask).subscribe();
+    this.subscriptions.push(sub);
   }
   ngOnInit() {
-    this.getTasks().subscribe();
-    this.tasksService.tasksUpdated
+    const sub = this.getTasks().subscribe();
+    this.subscriptions.push(sub);
+    const tasksUpdatedSub = this.tasksService.tasksUpdated
       .pipe(
         concatMap((task: TaskItemInterface) => {
           if (task.type === this.list.name) {
             return this.getTasks();
           }
-          return of();
+          return of([]);
         })
       )
       .subscribe();
-    this.newItem.valueChanges.subscribe(
+    this.subscriptions.push(tasksUpdatedSub);
+    const newItemValueChangesSub = this.newItem.valueChanges.subscribe(
       value => (this.newTaskDescription = value)
     );
+    this.subscriptions.push(newItemValueChangesSub);
   }
   public addNewTask() {
     this.addNewCard = !this.addNewCard;
@@ -78,7 +84,7 @@ export class TaskListComponent implements OnInit {
       description: this.newTaskDescription,
       type: this.list.name,
     };
-    this.tasksService
+    const sub = this.tasksService
       .createTask(newTask)
       .pipe(
         concatMap(() => this.getTasks()),
@@ -86,6 +92,7 @@ export class TaskListComponent implements OnInit {
       )
       .subscribe();
     this.newTaskDescription = '';
+    this.subscriptions.push(sub);
   }
   public getTasks() {
     return this.tasksService.getTasks(this.list.name).pipe(
@@ -100,5 +107,8 @@ export class TaskListComponent implements OnInit {
   }
   deleteList() {
     this.onDeleteList.emit(this.list);
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }

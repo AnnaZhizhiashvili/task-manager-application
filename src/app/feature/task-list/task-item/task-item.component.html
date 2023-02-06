@@ -44,4 +44,12 @@
   </p-header>
 </ng-template>
 
+<p-dialog header='Move task' [(visible)]="displayMoveItem" [modal]='true' [dismissableMask]='dismissableMask'>
+  <p-listbox (onClick)="onDestinationChange($event)" [options]="lists" [(ngModel)]="selectedList" [multiple]="true" optionLabel="name">
+    <ng-template pTemplate="header">
+      Select destination for this task:
+    </ng-template>
+  </p-listbox>
+</p-dialog>
+
 <p-confirmPopup></p-confirmPopup>

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { concatMap, Subject, tap } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { concatMap, Subject, Subscription, tap } from 'rxjs';
 import { TasksService } from '../../shared/services/tasks.service';
 import { NotificationsService } from '../../shared/services/notifications.service';
 import { ListsService } from '../../shared/services/lists.service';
@@ -12,12 +12,14 @@ import { FormControl, Validators } from '@angular/forms';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   public display = false;
   addingNewListMode = false;
   public taskLists$ = new Subject<TaskListInterface[]>();
   public newListValue: string;
   public newItem = new FormControl('', Validators.required);
+  public subscriptions: Subscription[];
+
   constructor(
     private tasksService: TasksService,
     private listsService: ListsService,
@@ -25,8 +27,8 @@ export class DashboardComponent implements OnInit {
     private helperService: HelperService
   ) {}
   ngOnInit() {
-    this.getLists().subscribe();
-    this.tasksService.onNotification
+    const sub = this.getLists().subscribe();
+    const notificationsSub = this.tasksService.onNotification
       .pipe(
         tap(event => {
           if (event === 'success') {
@@ -39,9 +41,10 @@ export class DashboardComponent implements OnInit {
       )
       .subscribe();
 
-    this.newItem.valueChanges.subscribe(value => {
+    const valueChangesSub = this.newItem.valueChanges.subscribe(value => {
       this.newListValue = value;
     });
+    this.subscriptions.splice(0, 0, valueChangesSub, notificationsSub, sub);
   }
 
   getLists() {
@@ -56,10 +59,11 @@ export class DashboardComponent implements OnInit {
       name: this.newListValue,
       id: this.helperService.uniqueID(),
     };
-    this.listsService
+    const sub = this.listsService
       .createList(newList)
       .pipe(concatMap(() => this.getLists()))
       .subscribe();
+    this.subscriptions.push(sub);
   }
 
   newItemValueChanged(val) {
@@ -67,9 +71,13 @@ export class DashboardComponent implements OnInit {
   }
 
   deleteList(list) {
-    this.listsService
+    const sub = this.listsService
       .deleteList(list)
       .pipe(concatMap(() => this.getLists()))
       .subscribe();
+    this.subscriptions.push(sub);
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }
