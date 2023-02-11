@@ -15,7 +15,14 @@ import {
 } from '@angular/cdk/drag-drop';
 import { TaskItemInterface } from '../../../shared/models/task-item.interface';
 import { TasksService } from '../../../shared/services/tasks.service';
-import { concatMap, of, Subject, Subscription, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  concatMap,
+  of,
+  Subject,
+  Subscription,
+  tap,
+} from 'rxjs';
 import { HelperService } from '../../../shared/services/helper.service';
 import { ColorTypes } from '../../../shared/models/colors.model';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
@@ -38,7 +45,8 @@ export class TaskListComponent implements OnInit, OnDestroy {
   public tasks: TaskItemInterface[];
   public tasks$ = new Subject<TaskItemInterface[]>();
   public newItem = new FormControl('', Validators.required);
-  public subscriptions: Subscription[];
+  public subscriptions: Subscription[] = [];
+  public loading = this.tasksService.loading;
 
   drop(event: CdkDragDrop<TaskItemInterface[]>) {
     if (event.previousContainer === event.container) {

@@ -1,9 +1,9 @@
 <p-card class='task-card'>
   <ng-container *ngIf='task.labels' [ngTemplateOutlet]='labelColors' [ngTemplateOutletContext]="{$implicit: task.labels}">
   </ng-container>
-  <p-speedDial direction="right" [type]="'semi-circle'" [model]="items" [radius]="65" type="button" hideIcon="pi pi-times"  showIcon='pi pi-pencil' buttonClassName="p-button-text p-button-plain" class="edit-btn " iconPos="left"></p-speedDial>
+  <p-speedDial   direction='right' [radius]='50' [type]="'semi-circle'" [model]="items"  type="button" hideIcon="pi pi-times"  showIcon='pi pi-pencil' buttonClassName="p-button-text p-button-plain" class="edit-btn " iconPos="left"></p-speedDial>
   <p>{{ task.description }}</p>
-  <p-dialog (onShow)='onShowEditDialog()' header='Labels' [(visible)]="displayLabelEdit" [modal]='true' [dismissableMask]='dismissableMask'>
+  <p-dialog (onShow)='onShowEditDialog()' header='Labels' [(visible)]="displayLabelEdit" [modal]='true' [dismissableMask]='dismissibleMask'>
     <p-card class='mb-3 task-card edit-label-card'>
       <ng-container *ngIf='appliedColors.length'>
           <ng-container  [ngTemplateOutlet]='labelColors' [ngTemplateOutletContext]="{$implicit: appliedColors}">
@@ -44,12 +44,20 @@
   </p-header>
 </ng-template>
 
-<p-dialog header='Move task' [(visible)]="displayMoveItem" [modal]='true' [dismissableMask]='dismissableMask'>
-  <p-listbox (onClick)="onDestinationChange($event)" [options]="lists" [(ngModel)]="selectedList" [multiple]="true" optionLabel="name">
+<p-dialog   header='Move task' [(visible)]="displayMoveItem" [modal]='true' [dismissableMask]='dismissibleMask'>
+  <p-listbox optionDisabled="inactive"  (onClick)='onDestinationChange($event)'  [options]="lists" [(ngModel)]="selectedList" [multiple]="true" optionLabel="name">
     <ng-template pTemplate="header">
       Select destination for this task:
     </ng-template>
   </p-listbox>
 </p-dialog>
 
-<p-confirmPopup></p-confirmPopup>
+
+<p-dialog header='Move task' [(visible)]="displayEditItem" [modal]='true' [dismissableMask]='dismissibleMask'>
+    <ng-template pTemplate="header">
+      Select destination for this task:
+    </ng-template>
+</p-dialog>
+
+
+

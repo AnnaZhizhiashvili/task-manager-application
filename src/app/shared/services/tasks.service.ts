@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { TaskListInterface } from '../models/task-list.interface';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { TaskItemInterface } from '../models/task-item.interface';
-import { Subject } from 'rxjs';
-import { HelperService } from './helper.service';
+import { BehaviorSubject, Subject, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +10,8 @@ import { HelperService } from './helper.service';
 export class TasksService {
   onNotification = new Subject();
   tasksUpdated = new Subject();
+  onTaskDestinationChange = new Subject();
+  public loading = new BehaviorSubject(true);
   readonly url = `${environment.apiUrl}/tasks`;
   constructor(private http: HttpClient) {}
 
@@ -19,12 +19,17 @@ export class TasksService {
     return this.http.post(this.url, task);
   }
   getTasks(type?) {
+    this.loading.next(true);
     if (type) {
       let params = new HttpParams();
       params = params.set('type', type);
-      return this.http.get<TaskItemInterface[]>(this.url, { params: params });
+      return this.http
+        .get<TaskItemInterface[]>(this.url, { params: params })
+        .pipe(tap(() => this.loading.next(false)));
     }
-    return this.http.get<TaskItemInterface[]>(this.url);
+    return this.http
+      .get<TaskItemInterface[]>(this.url)
+      .pipe(tap(() => this.loading.next(false)));
   }
 
   editTask(task: TaskItemInterface) {

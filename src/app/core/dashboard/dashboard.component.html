@@ -1,22 +1,29 @@
-<p-sidebar [(visible)]="display" styleClass="p-sidebar-sm" [transitionOptions]="'200ms'">Content</p-sidebar>
-
+<p-sidebar [(visible)]="display" styleClass="p-sidebar-sm" [transitionOptions]="'200ms'">
+</p-sidebar>
 <div class="fake-nav-wrapper" (click)="display = !display">
   <div class='fake-navigation'></div>
-  <button pButton pRipple type="button" icon="pi pi-angle-right" class="show-sideMenu-button p-button-rounded p-button-outlined p-button-plain p-button-sm" >
+  <button pButton pRipple type="button" icon="pi pi-angle-right" class="show-sideMenu-button p-button-rounded p-button-outlined p-button-plain p-button-sm">
   </button>
 </div>
 
 
-<div class='lists-container flex gap-3 align-items-start' cdkDropListGroup>
-  <ng-container *ngIf='(taskLists$ | async) as taskLists'>
-    <app-task-list (onDeleteList)="deleteList($event)" [list]='list' *ngFor='let list of taskLists' ></app-task-list>
-  </ng-container>
-  <button *ngIf='!addingNewListMode; else addingMode' (click)='addingNewListMode = !addingNewListMode' icon="pi pi-plus" pButton type="button" label="Add a new list" class="p-button-plain add-new-list-btn"></button>
-  <ng-template #addingMode>
-    <app-new-item [control]='newItem' (onClickCancel)='addingNewListMode = !addingNewListMode' (onClickAddBtn)='addNewList()' [type]='"input"' [btnText]='"Add a new List"' [placeHolder]='"Enter list title..."'></app-new-item>
-  </ng-template>
+<div class='container flex align-items-start gap-3'>
+  <div class='lists-container flex gap-3 align-items-start' cdkDropListGroup>
+    <ng-container *ngFor='let list of (taskLists$ | async)' >
+      <app-task-list  (onDeleteList)="deleteList($event)" [list]='list' >
+      </app-task-list>
+    </ng-container>
+  </div>
+  <button *ngIf='!addingNewListMode; else addingMode' (click)='addingNewListMode = !addingNewListMode' icon="pi pi-plus" pButton type="button" label="Add a new list" class="p-button-plain add-new-list-btn">
+  </button>
 </div>
 
+
+<ng-template #addingMode>
+  <app-new-item [control]='newItem' (onClickCancel)='addingNewListMode = !addingNewListMode' (onClickAddBtn)='addNewList()' [type]='"input"' [btnText]='"Add a new List"' [placeHolder]='"Enter list title..."'></app-new-item>
+</ng-template>
+
 <notifier-container></notifier-container>
+<p-confirmDialog header='Confirmation' icon="pi pi-exclamation-triangle"></p-confirmDialog>
 
 

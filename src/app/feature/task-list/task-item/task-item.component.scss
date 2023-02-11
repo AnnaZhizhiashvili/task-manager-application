@@ -1,14 +1,13 @@
 :host {
-
   ::ng-deep {
-
+    .p-skeleton {
+      background-color: #c1c7cc;
+    }
     .action-btns {
       margin-top: 20px;
       button {
         padding: 8px 28px;
       }
-
-
     }
     .task-card {
       .p-card-content {
@@ -39,10 +38,8 @@
         .p-button-icon {
           font-size: 16px;
         }
-
       }
     }
-
 
     .p-card {
       position: relative;
@@ -68,7 +65,6 @@
         transition: 0.2s;
       }
     }
-
   }
   .color-labels-list {
     li:not(:last-child) {
@@ -102,5 +98,4 @@
       border-radius: 4px;
     }
   }
-
 }

@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { map, Observable, switchMap, tap } from 'rxjs';
 import { TaskListInterface } from '../models/task-list.interface';
+import { TasksService } from './tasks.service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +11,7 @@ import { TaskListInterface } from '../models/task-list.interface';
 export class ListsService {
   readonly url = `${environment.apiUrl}/lists`;
   lists: TaskListInterface[];
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private tasksService: TasksService) {}
 
   createList(list: TaskListInterface) {
     return this.http.post(this.url, list);
@@ -21,6 +22,14 @@ export class ListsService {
       .pipe(tap(lists => (this.lists = lists)));
   }
   deleteList(list) {
-    return this.http.delete(`${this.url}/${list.id}`);
+    return this.http.delete(`${this.url}/${list.id}`).pipe(
+      switchMap(() => {
+        return this.tasksService.getTasks();
+      }),
+      map(tasks => tasks.filter(task => task.type === list.name)),
+      tap(tasks => {
+        tasks.forEach(task => this.tasksService.deleteTask(task).subscribe());
+      })
+    );
   }
 }

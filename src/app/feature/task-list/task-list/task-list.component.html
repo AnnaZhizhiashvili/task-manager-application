@@ -18,6 +18,16 @@
           <app-task-item *ngFor='let task of tasks' [task]='task' cdkDrag [cdkDragData]='task'></app-task-item>
         </div>
       </ng-container>
+      <ng-container *ngIf='(loading | async)'>
+        <div class='flex flex-column gap-1'>
+          <p-skeleton width="100%" height="140px"></p-skeleton>
+          <p-skeleton width="100%" height="140px"></p-skeleton>
+          <p-skeleton width="100%" height="140px"></p-skeleton>
+          <p-skeleton width="100%" height="140px"></p-skeleton>
+        </div>
+      </ng-container>
+
+
 
       <div class='list-footer'>
         <button *ngIf='!addNewCard; else showTextarea' (click)='addNewCard = !addNewCard' pButton label="Add a task" icon="pi pi-plus" iconPos="left" class="p-button-text p-button-plain add-card"></button>

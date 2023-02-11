@@ -24,25 +24,22 @@ import { ListsService } from '../../../shared/services/lists.service';
 export class TaskItemComponent implements OnInit, OnDestroy {
   @Input() task: TaskItemInterface;
   @Output() onMessage = new EventEmitter<string>();
-  public subscriptions: Subscription[];
-  colors; // all colors
-  displayLabelEdit = false;
-  displayMoveItem = false;
-  dismissableMask = true;
-  colorsArr = ColorTypes;
-  appliedColors = []; //colors that are applied
-  form;
+  public subscriptions: Subscription[] = [];
+  public colors; // all colors
+  public displayLabelEdit = false;
+  public displayMoveItem = false;
+  public displayEditItem = false;
+  public dismissibleMask = true;
+  public colorsArr = ColorTypes;
+  public appliedColors = []; //colors that are applied
+  public form;
+  public loading = this.tasksService.loading;
   public selectedList: string;
   public items = [
     {
       icon: 'pi pi-pencil',
-
       command: () => {
-        // this.messageService.add({
-        //   severity: 'info',
-        //   summary: 'Add',
-        //   detail: 'Data Added',
-        // });
+        this.onTaskEdit();
       },
     },
     {
@@ -58,9 +55,7 @@ export class TaskItemComponent implements OnInit, OnDestroy {
       icon: 'pi pi-trash',
       command: () => {
         this.confirmationService.confirm({
-          target: event.target,
           message: 'Are you sure that you want to proceed?',
-          icon: 'pi pi-exclamation-triangle',
           accept: () => {
             const sub = this.deleteTask(this.task).subscribe();
             this.subscriptions.push(sub);
@@ -79,9 +74,6 @@ export class TaskItemComponent implements OnInit, OnDestroy {
       command: () => {
         this.onItemMove();
       },
-    },
-    {
-      icon: 'pi pi-external-link',
     },
   ];
 
@@ -156,35 +148,28 @@ export class TaskItemComponent implements OnInit, OnDestroy {
   onLabelEdit() {
     this.displayLabelEdit = true;
   }
+  get lists() {
+    const lists = this.listsService.lists.map(list => {
+      if (list.name === this.task.type) return { ...list, inactive: true };
+      return { ...list, inactive: false };
+    });
+    return lists;
+  }
 
+  // when user clicks move button
   onItemMove() {
     this.displayMoveItem = true;
   }
-  get lists() {
-    return this.listsService.lists;
-  }
-  public onDestinationChange(event) {
+  // when user confirms to move the task
+  public onDestinationChange(e) {
     const oldTask = this.task;
-    const newTask = { ...this.task, type: event.option.name };
-    this.confirmationService.confirm({
-      target: event.originalEvent.target,
-      message: 'Are you sure that you want to move this task  ?',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        const sub = this.tasksService
-          .editTask(newTask)
-          .pipe(
-            tap(() => {
-              this.tasksService.tasksUpdated.next(newTask);
-              this.tasksService.tasksUpdated.next(oldTask);
-            })
-          )
-          .subscribe();
-        this.subscriptions.push(sub);
-      },
-    });
+    const newTask = { ...this.task, type: e.option.name };
+    this.tasksService.onTaskDestinationChange.next([oldTask, newTask]);
   }
 
+  public onTaskEdit() {
+    this.displayEditItem = true;
+  }
   closeDialog() {
     this.displayLabelEdit = !this.displayLabelEdit;
   }

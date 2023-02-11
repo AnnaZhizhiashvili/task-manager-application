@@ -1,3 +1,7 @@
+:host {
+  height: 100%;
+  display: block;
+}
 ::ng-deep .p-button:focus {
   box-shadow: none !important;
   -webkit-box-shadow: none !important;
