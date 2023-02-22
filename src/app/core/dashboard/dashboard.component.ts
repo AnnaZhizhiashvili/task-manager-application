@@ -6,7 +6,7 @@ import { ListsService } from '../../shared/services/lists.service';
 import { TaskListInterface } from '../../shared/models/task-list.interface';
 import { HelperService } from '../../shared/services/helper.service';
 import { FormControl, Validators } from '@angular/forms';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MenuItem } from 'primeng/api';
 import {
   CdkDragDrop,
   moveItemInArray,
@@ -20,15 +20,12 @@ import { TaskItemInterface } from '../../shared/models/task-item.interface';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  public display = false;
   addingNewListMode = false;
   public taskLists = [];
   public taskLists$ = new Subject<TaskListInterface[]>();
   public newListValue: string;
   public newItem = new FormControl('', Validators.required);
   public subscriptions: Subscription[] = [];
-  items = [];
-  public loading;
 
   constructor(
     private tasksService: TasksService,

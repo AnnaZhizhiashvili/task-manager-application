@@ -1,1 +1,31 @@
-<app-dashboard></app-dashboard>
+<p-sidebar [(visible)]="display" styleClass="p-sidebar-sm" [transitionOptions]="'200ms'">
+
+  <p-slideMenu [viewportHeight]='500' [menuWidth]="274" [model]="items">
+  </p-slideMenu>
+
+</p-sidebar>
+
+
+<div class="fake-nav-wrapper" (click)="display = !display">
+  <div class='fake-navigation'></div>
+  <button pButton pRipple type="button" icon="pi pi-angle-right" class="show-sideMenu-button p-button-rounded p-button-outlined p-button-plain p-button-sm">
+  </button>
+</div>
+
+
+<app-dashboard [ngStyle]='{backgroundColor: (backgroundColor$ | async)}'></app-dashboard>
+<p-dialog [(visible)]="addMemberMode" [modal]='true' (onHide)='form.reset()' #dialog>
+  <div class='member-wrapper'>
+    <p class='mb-3'>Add a new member</p>
+    <div class='flex flex-column gap-3 mb-3' [formGroup]='form'>
+      <input type="text" pInputText placeholder="Name" formControlName='memberName' required>
+      <small *ngIf="form.get('memberName').dirty && form.get('memberName').invalid" id="username1-help" class="p-error block">this field is required</small>
+      <input type="text" pInputText placeholder="Surname" formControlName='memberSurname' required>
+      <small *ngIf="form.get('memberSurname').dirty && form.get('memberSurname').invalid" id="username2-help" class="p-error block">this field is required</small>
+    </div>
+  </div>
+  <div class='action-btns flex justify-content-between'>
+    <button pButton type="button"  class="p-button-danger p-button-outlined" (click)='dialog.close($event)'>Cancel</button>
+    <button pButton type="button"  class="p-button" (click)='onAddMember()'>Add</button>
+  </div>
+</p-dialog>

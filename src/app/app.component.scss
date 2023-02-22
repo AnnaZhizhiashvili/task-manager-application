@@ -1,6 +1,99 @@
+@import './colors';
+
 :host {
   height: 100%;
   display: block;
+  .fake-nav-wrapper {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+    .fake-navigation {
+      width: 16px;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      border-right: 1px solid var(--dynamic-text-color-transparent, #dfe1e6);
+      box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px,
+        rgba(0, 0, 0, 0.24) 0px 1px 2px;
+      z-index: -1;
+    }
+    .show-sideMenu-button {
+      background-color: $main-gray;
+      position: absolute;
+      top: 10px;
+      left: 5px;
+      height: 34px;
+      width: 20px;
+    }
+    &:hover * {
+      transition: all 0.4s ease;
+      filter: brightness(85%);
+    }
+  }
+  ::ng-deep {
+    .p-slidemenu .p-menuitem-link:not(.p-disabled):hover {
+      background-color: unset;
+    }
+    .p-menuitem:hover {
+      opacity: 0.8;
+    }
+    .p-slidemenu .p-menuitem-link,
+    .color {
+      height: 32px;
+      border-radius: 11px;
+    }
+    .color {
+      &:not(:last-child) {
+        margin-bottom: 11px;
+      }
+    }
+    .black {
+      background-color: black;
+    }
+    .rose-red {
+      background-color: #800020;
+    }
+    .pink {
+      background-color: #de3163;
+    }
+
+    .pastel-red {
+      background-color: #faa0a0;
+    }
+
+    .purple {
+      background-color: #630330;
+    }
+
+    .wine-red {
+      background-color: #722f37;
+    }
+
+    .marisa {
+      background-color: #986868;
+    }
+    .green-blue {
+      background-color: #5496a8;
+    }
+    .green {
+      background-color: #5b8e8a;
+    }
+    .yellow {
+      background-color: #e7ce6e;
+    }
+    .orange {
+      background-color: #daa44d;
+    }
+    .p-slidemenu {
+      border: unset;
+    }
+    .p-sidebar-icon {
+      .pi:before {
+        content: '\e931';
+      }
+    }
+  }
 }
 ::ng-deep .p-button:focus {
   box-shadow: none !important;

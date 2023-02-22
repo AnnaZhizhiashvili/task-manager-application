@@ -33,7 +33,6 @@ export class TaskItemComponent implements OnInit, OnDestroy {
   public colorsArr = ColorTypes;
   public appliedColors = []; //colors that are applied
   public form;
-  public loading = this.tasksService.loading;
   public selectedList: string;
   public items = [
     {

@@ -21,8 +21,6 @@ export class NewItemComponent {
   }
   onClickAdd() {
     this.onClickAddBtn.emit();
-  }
-  onValueChange() {
-    this.valueChanged.emit(this.value);
+    this.control.reset();
   }
 }
