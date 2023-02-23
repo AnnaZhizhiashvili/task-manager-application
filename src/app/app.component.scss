@@ -1,13 +1,12 @@
 @import './colors';
 
 :host {
-  height: 100%;
-  display: block;
+  position: relative;
   .fake-nav-wrapper {
     cursor: pointer;
     position: absolute;
     top: 0;
-    bottom: 0;
+    bottom: 15px;
     z-index: 1;
     .fake-navigation {
       width: 16px;

@@ -12,7 +12,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class AppComponent implements OnInit {
   public display = false;
   public addMemberMode = false;
+  public dismissibleMask = true;
   public form: FormGroup;
+  public isSubmitted = false;
   items: MenuItem[] = [];
   backgroundColor$ = new BehaviorSubject('purple');
 
@@ -103,6 +105,7 @@ export class AppComponent implements OnInit {
     });
   }
   onAddMember() {
+    this.isSubmitted = true;
     if (this.form.valid) {
       const member = {
         name: this.form.get('memberName').value,
@@ -118,7 +121,9 @@ export class AppComponent implements OnInit {
           })
         )
         .subscribe();
+      console.log(this.form);
     }
+    console.log(this.form);
   }
   changeBackground(event) {
     const color = event.item.title;

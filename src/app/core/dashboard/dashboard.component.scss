@@ -1,13 +1,15 @@
 @import '../../colors';
 
 :host {
-  height: 100%;
+  min-height: 100%;
   width: 100%;
   display: block;
   position: relative;
+
   .container {
     display: block;
-    padding: 60px 100px;
+    padding: 60px 100px 0 60px;
+    overflow: auto;
   }
 
   .add-new-list-btn {
