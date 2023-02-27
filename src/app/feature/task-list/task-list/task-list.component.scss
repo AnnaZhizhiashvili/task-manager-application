@@ -2,6 +2,10 @@
 
 :host {
   width: 267px;
+  .emptyList {
+    width: 237px;
+    height: 73px;
+  }
   ::ng-deep {
     .list-container {
       background-color: $main-gray;

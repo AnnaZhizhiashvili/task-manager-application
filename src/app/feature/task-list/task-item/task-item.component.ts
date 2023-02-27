@@ -1,19 +1,27 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
   OnDestroy,
   OnInit,
   Output,
+  ViewChild,
 } from '@angular/core';
-import { TaskItemInterface } from '../../../shared/models/task-item.interface';
+import {
+  TaskItemInterface,
+  UserInterface,
+} from '../../../shared/models/task-item.interface';
 import { ConfirmationService } from 'primeng/api';
 import { TasksService } from '../../../shared/services/tasks.service';
-import { Subscription, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, finalize, Subscription, tap } from 'rxjs';
 import { ColorTypes } from '../../../shared/models/colors.model';
 import { FormBuilder } from '@angular/forms';
 import { ListsService } from '../../../shared/services/lists.service';
+import { HelperService } from '../../../shared/services/helper.service';
+import { Listbox } from 'primeng/listbox';
+import { NotificationsService } from '../../../shared/services/notifications.service';
 
 @Component({
   selector: 'app-task-item',
@@ -34,6 +42,14 @@ export class TaskItemComponent implements OnInit, OnDestroy {
   public appliedColors = []; //colors that are applied
   public form;
   public selectedList: string;
+  public editMembersMode = false;
+  public members$ = new BehaviorSubject<UserInterface[]>([]);
+  public taskMembers$ = new BehaviorSubject<UserInterface[]>([]);
+  public taskMembers: UserInterface[];
+  public selectedMembers;
+  public filterValue;
+
+  @ViewChild('listBox') listBox: Listbox;
   public items = [
     {
       icon: 'pi pi-pencil',
@@ -56,6 +72,7 @@ export class TaskItemComponent implements OnInit, OnDestroy {
         this.confirmationService.confirm({
           message: 'Are you sure that you want to proceed?',
           accept: () => {
+            this.tasksService.taskRemoved$.next(this.task);
             const sub = this.deleteTask(this.task).subscribe();
             this.subscriptions.push(sub);
           },
@@ -74,20 +91,55 @@ export class TaskItemComponent implements OnInit, OnDestroy {
         this.onItemMove();
       },
     },
+
+    {
+      icon: 'pi pi-user',
+      command: () => {
+        this.editMembersMode = true;
+        // this.resetMemberListBox();
+        this.selectedMembers = [...this.taskMembers];
+        this.cdr.detectChanges();
+        console.log(this.selectedMembers);
+      },
+    },
   ];
 
   constructor(
     private confirmationService: ConfirmationService,
     private tasksService: TasksService,
+    private helperService: HelperService,
+    private notificationsService: NotificationsService,
     private listsService: ListsService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
   ) {}
   ngOnInit() {
+    this.helperService.members
+      .pipe(
+        tap(members => {
+          const taskMembers = members.filter(member =>
+            this.task.members?.includes(member.id)
+          );
+          this.taskMembers$.next(taskMembers);
+          this.taskMembers = [...taskMembers];
+          this.selectedMembers = [...this.taskMembers];
+          this.members$.next(
+            members.map(member => ({
+              ...member,
+              fullName: member.name + ' ' + member.surname,
+            }))
+          );
+        })
+      )
+      .subscribe();
+
     this.form = this.fb.group({
       labelColors: this.fb.array(this.colorsArr.map(e => !1)),
     });
   }
-
+  ch(e) {
+    console.log(e);
+  }
   onShowEditDialog() {
     if (this.task.labels) {
       this.appliedColors = this.task.labels;
@@ -171,6 +223,33 @@ export class TaskItemComponent implements OnInit, OnDestroy {
   }
   closeDialog() {
     this.displayLabelEdit = !this.displayLabelEdit;
+  }
+
+  onApplyMember() {
+    console.log(this.selectedMembers);
+    this.editMembersMode = false;
+    const members = this.selectedMembers.map(member => member.id);
+    const newTask = { ...this.task, members };
+    this.tasksService
+      .editTask(newTask)
+      .pipe(
+        tap(() => {
+          this.taskMembers$.next([...this.selectedMembers]);
+          this.taskMembers = [...this.selectedMembers];
+          this.editMembersMode = false;
+          this.notificationsService.showNotification(
+            'success',
+            'You have successfully edited members for this task'
+          );
+        })
+      )
+
+      .subscribe();
+  }
+
+  resetMemberListBox() {
+    this.selectedMembers = [];
+    this.filterValue = '';
   }
 
   ngOnDestroy() {

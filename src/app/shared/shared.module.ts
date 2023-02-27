@@ -32,7 +32,9 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
     SpeedDialModule,
     FormsModule,
     ConfirmPopupModule,
-    NotifierModule,
+    NotifierModule.withConfig({
+      theme: 'material',
+    }),
     DialogModule,
     CheckboxModule,
     ReactiveFormsModule,

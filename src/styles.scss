@@ -106,6 +106,7 @@ section {
 body,
 html {
   line-height: 1;
+  height: 100vh;
 }
 ol,
 ul {
@@ -150,5 +151,13 @@ a {
   border-radius: 100px;
   &:hover {
     background-color: #5749d2;
+  }
+}
+
+::ng-deep {
+  .notifier__notification
+    notifier__notification--success
+    notifier__notification--material {
+    font-family: sans-serif !important;
   }
 }

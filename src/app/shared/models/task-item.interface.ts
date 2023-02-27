@@ -1,16 +1,17 @@
 export interface TaskItemInterface {
   id: number;
-  description: string;
+  description?: string;
   type: string;
-  members?: UserInterface[];
+  members?: number[];
   labels?: LabelsInterface[];
 }
 
-interface UserInterface {
+export interface UserInterface {
   name: string;
   surname: string;
-  mail: string;
-  color: string;
+  mail?: string;
+  color?: string;
+  id: number;
 }
 
 interface LabelsInterface {

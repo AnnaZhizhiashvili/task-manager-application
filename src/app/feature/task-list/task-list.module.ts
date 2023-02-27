@@ -16,6 +16,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ListboxModule } from 'primeng/listbox';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { SkeletonModule } from 'primeng/skeleton';
+import { InputTextModule } from 'primeng/inputtext';
 
 @NgModule({
   declarations: [TaskListComponent, TaskItemComponent],
@@ -36,6 +37,7 @@ import { SkeletonModule } from 'primeng/skeleton';
     ListboxModule,
     ConfirmDialogModule,
     SkeletonModule,
+    InputTextModule,
   ],
   exports: [TaskListComponent],
 })

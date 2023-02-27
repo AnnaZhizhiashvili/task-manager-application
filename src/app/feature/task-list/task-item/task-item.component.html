@@ -1,7 +1,7 @@
 <p-card class='task-card'>
   <ng-container *ngIf='task.labels' [ngTemplateOutlet]='labelColors' [ngTemplateOutletContext]="{$implicit: task.labels}">
   </ng-container>
-  <p-speedDial   direction='right' [radius]='50' [type]="'semi-circle'" [model]="items"  type="button" hideIcon="pi pi-times"  showIcon='pi pi-pencil' buttonClassName="p-button-text p-button-plain" class="edit-btn " iconPos="left"></p-speedDial>
+  <p-speedDial   direction='right' [radius]='56' [type]="'semi-circle'" [model]="items"  type="button" hideIcon="pi pi-times"  showIcon='pi pi-pencil' buttonClassName="p-button-text p-button-plain" class="edit-btn " iconPos="left"></p-speedDial>
   <p>{{ task.description }}</p>
   <p-dialog (onShow)='onShowEditDialog()' header='Labels' [(visible)]="displayLabelEdit" [modal]='true' [dismissableMask]='dismissibleMask'>
     <p-card class='mb-3 task-card edit-label-card'>
@@ -9,10 +9,9 @@
           <ng-container  [ngTemplateOutlet]='labelColors' [ngTemplateOutletContext]="{$implicit: appliedColors}">
           </ng-container>
       </ng-container>
-
       <p>{{ task.description }}</p>
     </p-card>
-    <form [formGroup]='form'>
+    <form [formGroup]='form' >
       <ul class='color-labels-list mt-3' formArrayName='labelColors'>
         <li *ngFor='let colorType of colorsArr; let i = index' class='flex align-items-center gap-2'>
           <mat-checkbox [formControlName]='i' type="checkbox" (change)='onChangeCheckbox($event)' name='labelsGroup'  [id]="colorType?.color" value='true' >
@@ -30,7 +29,7 @@
     </div>
   </p-dialog>
   <ng-template pTemplate="footer">
-    <p-badge *ngFor='let member of task.members' [severity]="member.color" [value]='[member.name, member.surname] | badgeName'>
+    <p-badge *ngFor='let member of taskMembers$ | async' [severity]="member.color" [value]='[member.name, member.surname] | badgeName' [style]="{background: member.color}">
     </p-badge>
   </ng-template>
 </p-card>
@@ -52,12 +51,33 @@
   </p-listbox>
 </p-dialog>
 
-
 <p-dialog header='Move task' [(visible)]="displayEditItem" [modal]='true' [dismissableMask]='dismissibleMask'>
     <ng-template pTemplate="header">
       Select destination for this task:
     </ng-template>
 </p-dialog>
+<ng-container  *ngIf='members$ | async as members'>
+  <p-dialog #memberDialog header='Change Members' [(visible)]="editMembersMode" [modal]='true' [dismissableMask]='dismissibleMask'>
+  <p-listbox [dataKey]='"id"' #listBox [checkbox]="true" (ngModelChange)='ch($event)'  [filterMatchMode]='"contains"' [options]="members" [(ngModel)]="selectedMembers" [multiple]="true"    [filter]="true" optionLabel="fullName" filterBy="label" [listStyle]="{'max-height':'250px'}">
+    <ng-template pTemplate="filter" let-options="options">
+      <div class="p-inputgroup">
+        <span class="p-inputgroup-addon"><i class="pi pi-search"></i></span>
+        <input type="text" pInputText placeholder="Filter" [(ngModel)]="filterValue" (keyup)="options.filter($event)">
+      </div>
+    </ng-template>
+    <ng-template let-member pTemplate="item" >
+      <div class="member-item">
+        <div>{{member.fullName}}</div>
+      </div>
+    </ng-template>
+  </p-listbox>
+
+    <div class='action-btns flex justify-content-between'>
+      <button pButton type="button"  class="p-button-danger p-button-outlined" (click)='memberDialog.close($event); resetMemberListBox()'>Cancel</button>
+      <button pButton type="button"  class="p-button" (click)='onApplyMember()'>Apply</button>
+    </div>
+  </p-dialog>
+</ng-container>
 
 
 

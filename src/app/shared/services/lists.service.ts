@@ -17,10 +17,9 @@ export class ListsService {
     return this.http.post(this.url, list);
   }
   getLists(): Observable<TaskListInterface[]> {
-    return this.http.get<TaskListInterface[]>(this.url).pipe(
-      tap(lists => (this.lists = lists)),
-      shareReplay({ bufferSize: 1, refCount: true })
-    );
+    return this.http
+      .get<TaskListInterface[]>(this.url)
+      .pipe(tap(lists => (this.lists = lists)));
   }
   deleteList(list) {
     return this.http.delete(`${this.url}/${list.id}`).pipe(

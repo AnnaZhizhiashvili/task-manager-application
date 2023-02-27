@@ -15,17 +15,9 @@ import {
 } from '@angular/cdk/drag-drop';
 import { TaskItemInterface } from '../../../shared/models/task-item.interface';
 import { TasksService } from '../../../shared/services/tasks.service';
-import {
-  BehaviorSubject,
-  concatMap,
-  of,
-  Subject,
-  Subscription,
-  tap,
-} from 'rxjs';
+import { BehaviorSubject, combineLatest, of, Subscription, tap } from 'rxjs';
 import { HelperService } from '../../../shared/services/helper.service';
-import { ColorTypes } from '../../../shared/models/colors.model';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-task-list',
@@ -42,8 +34,8 @@ export class TaskListComponent implements OnInit, OnDestroy {
   @Output() onDeleteList = new EventEmitter();
   public addNewCard = false;
   public newTaskDescription: string;
-  public tasks: TaskItemInterface[];
-  public tasks$ = new Subject<TaskItemInterface[]>();
+  public tasks: TaskItemInterface[] = [];
+  public tasks$ = new BehaviorSubject<TaskItemInterface[]>([]);
   public newItem = new FormControl('', Validators.required);
   public subscriptions: Subscription[] = [];
   public loading = this.tasksService.loading;
@@ -69,21 +61,51 @@ export class TaskListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const sub = this.getTasks().subscribe();
     this.subscriptions.push(sub);
-    const tasksUpdatedSub = this.tasksService.tasksUpdated
+    this.onChangeDestination();
+    this.onRemoveTask();
+    const newItemValueChangesSub = this.newItem.valueChanges.subscribe(
+      value => (this.newTaskDescription = value)
+    );
+    this.subscriptions.push(newItemValueChangesSub);
+  }
+
+  public onRemoveTask() {
+    const removeSub = this.tasksService.taskRemoved$
       .pipe(
-        concatMap((task: TaskItemInterface) => {
+        tap(task => {
           if (task.type === this.list.name) {
-            return this.getTasks();
+            const newTasksList = this.tasks.filter(item => task.id !== item.id);
+            this.tasks = newTasksList;
+            this.tasks$.next(newTasksList);
+          }
+        })
+      )
+      .subscribe();
+    this.subscriptions.push(removeSub);
+  }
+
+  public onChangeDestination() {
+    const changeDestinationSub = combineLatest([
+      this.tasksService.taskAddedToList$,
+      this.tasksService.taskRemovedFromList$,
+    ])
+      .pipe(
+        tap(([oldTask, newTask]) => {
+          let newTasksList;
+          if (oldTask.type === this.list.name) {
+            newTasksList = this.tasks.filter(task => task.id !== oldTask.id);
+            this.tasks = newTasksList;
+            this.tasks$.next(newTasksList);
+          } else if (newTask.type === this.list.name) {
+            newTasksList = [...this.tasks, newTask];
+            this.tasks = newTasksList;
+            this.tasks$.next(newTasksList);
           }
           return of([]);
         })
       )
       .subscribe();
-    this.subscriptions.push(tasksUpdatedSub);
-    const newItemValueChangesSub = this.newItem.valueChanges.subscribe(
-      value => (this.newTaskDescription = value)
-    );
-    this.subscriptions.push(newItemValueChangesSub);
+    this.subscriptions.push(changeDestinationSub);
   }
   public addNewTask() {
     this.addNewCard = !this.addNewCard;
@@ -95,8 +117,11 @@ export class TaskListComponent implements OnInit, OnDestroy {
     const sub = this.tasksService
       .createTask(newTask)
       .pipe(
-        concatMap(() => this.getTasks()),
-        tap(tasks => (this.tasks = tasks))
+        tap((task: TaskItemInterface) => {
+          const tasks = [...this.tasks, task];
+          this.tasks$.next(tasks);
+          this.tasks = tasks;
+        })
       )
       .subscribe();
     this.newTaskDescription = '';
@@ -105,8 +130,8 @@ export class TaskListComponent implements OnInit, OnDestroy {
   public getTasks() {
     return this.tasksService.getTasks(this.list.name).pipe(
       tap((tasks: TaskItemInterface[]) => {
-        this.tasks = tasks;
         this.tasks$.next(tasks);
+        this.tasks = tasks;
       })
     );
   }

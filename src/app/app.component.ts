@@ -1,8 +1,9 @@
 import { MenuItem, PrimeIcons, PrimeNGConfig } from 'primeng/api';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
 import { BehaviorSubject, tap } from 'rxjs';
 import { HelperService } from './shared/services/helper.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UserInterface } from './shared/models/task-item.interface';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +15,7 @@ export class AppComponent implements OnInit {
   public addMemberMode = false;
   public dismissibleMask = true;
   public form: FormGroup;
+  public members: UserInterface[];
   public isSubmitted = false;
   items: MenuItem[] = [];
   backgroundColor$ = new BehaviorSubject('purple');
@@ -28,6 +30,15 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.getBackgroundColor();
+    this.helperService
+      .getMembers()
+      .pipe(
+        tap(members => {
+          this.helperService.members.next(members);
+          this.members = members;
+        })
+      )
+      .subscribe();
     this.primengConfig.ripple = true;
     this.items = [
       {
@@ -111,6 +122,7 @@ export class AppComponent implements OnInit {
         name: this.form.get('memberName').value,
         surname: this.form.get('memberSurname').value,
         id: this.helperService.uniqueID(),
+        color: this.helperService.getDarkColor(),
       };
       this.helperService
         .addMember(member)
@@ -118,12 +130,11 @@ export class AppComponent implements OnInit {
           tap(() => {
             this.form.reset();
             this.addMemberMode = false;
+            this.helperService.members.next([...this.members, member]);
           })
         )
         .subscribe();
-      console.log(this.form);
     }
-    console.log(this.form);
   }
   changeBackground(event) {
     const color = event.item.title;
@@ -140,9 +151,5 @@ export class AppComponent implements OnInit {
         )
       )
       .subscribe();
-  }
-
-  public getMembers() {
-    this.helperService.getMembers().subscribe();
   }
 }

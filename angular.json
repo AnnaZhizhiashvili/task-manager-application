@@ -29,6 +29,7 @@
               "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/primeflex/primeflex.scss",
+              "node_modules/angular-notifier/styles.scss",
               "src/styles.scss"
             ],
             "scripts": []

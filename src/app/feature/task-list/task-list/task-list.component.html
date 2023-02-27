@@ -13,9 +13,10 @@
 
     <div class='list-wrapper'>
 
-      <ng-container *ngIf='(tasks$ | async) as tasks'>
+      <ng-container *ngIf='!(loading | async) && tasks$ | async as tasks'>
         <div class='task-items' cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListData]='tasks'>
           <app-task-item *ngFor='let task of tasks' [task]='task' cdkDrag [cdkDragData]='task'></app-task-item>
+          <div *ngIf='tasks.length === 0 && !addNewCard' class='emptyList'></div>
         </div>
       </ng-container>
       <ng-container *ngIf='(loading | async)'>

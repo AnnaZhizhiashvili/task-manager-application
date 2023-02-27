@@ -4,10 +4,10 @@
   position: relative;
   .fake-nav-wrapper {
     cursor: pointer;
-    position: absolute;
+    position: fixed;
     top: 0;
-    bottom: 15px;
-    z-index: 1;
+    bottom: 17px;
+    z-index: 2;
     .fake-navigation {
       width: 16px;
       height: 100%;
@@ -15,7 +15,6 @@
       border-right: 1px solid var(--dynamic-text-color-transparent, #dfe1e6);
       box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px,
         rgba(0, 0, 0, 0.24) 0px 1px 2px;
-      z-index: -1;
     }
     .show-sideMenu-button {
       background-color: $main-gray;

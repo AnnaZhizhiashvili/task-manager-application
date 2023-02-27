@@ -10,6 +10,9 @@ import { BehaviorSubject, shareReplay, Subject, tap } from 'rxjs';
 export class TasksService {
   onNotification = new Subject();
   tasksUpdated = new Subject();
+  taskRemovedFromList$ = new Subject<TaskItemInterface>();
+  taskAddedToList$ = new Subject<TaskItemInterface>();
+  taskRemoved$ = new Subject<TaskItemInterface>();
   onTaskDestinationChange = new Subject();
   public loading = new BehaviorSubject(true);
   readonly url = `${environment.apiUrl}/tasks`;

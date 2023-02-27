@@ -14,16 +14,16 @@
 
 
 <app-dashboard [ngStyle]='{backgroundColor: (backgroundColor$ | async)}'></app-dashboard>
-<p-dialog [(visible)]="addMemberMode" [modal]='true' (onHide)='form.reset(); isSubmitted = false' [dismissableMask]='dismissibleMask' #dialog>
+<p-dialog [style]="{width: '350px'}" [(visible)]="addMemberMode" [modal]='true' (onHide)='form.reset(); isSubmitted = false' [dismissableMask]='dismissibleMask' #dialog>
   <div class='member-wrapper'>
     <p class='mb-3'>Add a new member</p>
     <div class='flex flex-column gap-3 mb-3' [formGroup]='form'>
       <div>
-        <input type="text" pInputText placeholder="Name" formControlName='memberName' required>
+        <input [style]="{width: '100%'}" type="text" pInputText placeholder="Name" formControlName='memberName' required>
         <small *ngIf="form.get('memberName').invalid && isSubmitted" id="username1-help" class="p-error block">this field is required</small>
       </div>
       <div>
-        <input type="text" pInputText placeholder="Surname" formControlName='memberSurname' required>
+        <input [style]="{width: '100%'}" type="text" pInputText placeholder="Surname" formControlName='memberSurname' required>
         <small *ngIf="form.get('memberSurname').invalid && isSubmitted" id="username2-help" class="p-error block">this field is required</small>
       </div>
     </div>

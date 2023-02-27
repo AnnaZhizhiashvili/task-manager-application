@@ -36,6 +36,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ) {}
   ngOnInit() {
     const sub = this.getLists().subscribe();
+
     const notificationsSub = this.tasksService.onNotification
       .pipe(
         tap(event => {
@@ -110,8 +111,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         tap(() => {
           // I need to update two lists, 1. The list from which task is moved
           // 2. the list where we moved our task
-          this.tasksService.tasksUpdated.next(newTask);
-          this.tasksService.tasksUpdated.next(oldTask);
+          this.tasksService.taskAddedToList$.next(newTask);
+          this.tasksService.taskRemovedFromList$.next(oldTask);
         })
       )
       .subscribe();
