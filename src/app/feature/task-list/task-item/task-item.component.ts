@@ -27,7 +27,7 @@ import { NotificationsService } from '../../../shared/services/notifications.ser
   selector: 'app-task-item',
   templateUrl: './task-item.component.html',
   styleUrls: ['./task-item.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskItemComponent implements OnInit, OnDestroy {
   @Input() task: TaskItemInterface;
@@ -48,15 +48,10 @@ export class TaskItemComponent implements OnInit, OnDestroy {
   public taskMembers: UserInterface[];
   public selectedMembers;
   public filterValue;
+  public initializeListBox: boolean = true;
 
   @ViewChild('listBox') listBox: Listbox;
   public items = [
-    {
-      icon: 'pi pi-pencil',
-      command: () => {
-        this.onTaskEdit();
-      },
-    },
     {
       icon: 'pi pi-paperclip',
       command: () => {
@@ -98,8 +93,10 @@ export class TaskItemComponent implements OnInit, OnDestroy {
         this.editMembersMode = true;
         // this.resetMemberListBox();
         this.selectedMembers = [...this.taskMembers];
+        this.initializeListBox = false;
+        setTimeout(() => this.initializeListBox = true, 0);
+        this.filterValue = '';
         this.cdr.detectChanges();
-        console.log(this.selectedMembers);
       },
     },
   ];
@@ -137,9 +134,6 @@ export class TaskItemComponent implements OnInit, OnDestroy {
       labelColors: this.fb.array(this.colorsArr.map(e => !1)),
     });
   }
-  ch(e) {
-    console.log(e);
-  }
   onShowEditDialog() {
     if (this.task.labels) {
       this.appliedColors = this.task.labels;
@@ -167,6 +161,7 @@ export class TaskItemComponent implements OnInit, OnDestroy {
       .pipe(
         tap(task => {
           this.form.reset();
+          this.task = { ...this.task, labels: this.appliedColors }
           this.tasksService.tasksUpdated.next(task);
         })
       )
@@ -226,7 +221,6 @@ export class TaskItemComponent implements OnInit, OnDestroy {
   }
 
   onApplyMember() {
-    console.log(this.selectedMembers);
     this.editMembersMode = false;
     const members = this.selectedMembers.map(member => member.id);
     const newTask = { ...this.task, members };
@@ -246,10 +240,10 @@ export class TaskItemComponent implements OnInit, OnDestroy {
 
       .subscribe();
   }
-
   resetMemberListBox() {
     this.selectedMembers = [];
-    this.filterValue = '';
+    this.filterValue = undefined;
+    this.cdr.detectChanges()
   }
 
   ngOnDestroy() {

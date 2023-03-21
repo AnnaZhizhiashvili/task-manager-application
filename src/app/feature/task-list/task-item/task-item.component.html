@@ -1,9 +1,9 @@
 <p-card class='task-card'>
   <ng-container *ngIf='task.labels' [ngTemplateOutlet]='labelColors' [ngTemplateOutletContext]="{$implicit: task.labels}">
   </ng-container>
-  <p-speedDial   direction='right' [radius]='56' [type]="'semi-circle'" [model]="items"  type="button" hideIcon="pi pi-times"  showIcon='pi pi-pencil' buttonClassName="p-button-text p-button-plain" class="edit-btn " iconPos="left"></p-speedDial>
+  <p-speedDial   direction='right' [radius]='47' [type]="'semi-circle'" [model]="items"  type="button" hideIcon="pi pi-times"  showIcon='pi pi-pencil' buttonClassName="p-button-text p-button-plain" class="edit-btn " iconPos="left"></p-speedDial>
   <p>{{ task.description }}</p>
-  <p-dialog (onShow)='onShowEditDialog()' header='Labels' [(visible)]="displayLabelEdit" [modal]='true' [dismissableMask]='dismissibleMask'>
+  <p-dialog [style]='{maxWidth: "310px"}' (onShow)='onShowEditDialog()' header='Labels' [(visible)]="displayLabelEdit" [modal]='true' [dismissableMask]='dismissibleMask'>
     <p-card class='mb-3 task-card edit-label-card'>
       <ng-container *ngIf='appliedColors.length'>
           <ng-container  [ngTemplateOutlet]='labelColors' [ngTemplateOutletContext]="{$implicit: appliedColors}">
@@ -57,12 +57,12 @@
     </ng-template>
 </p-dialog>
 <ng-container  *ngIf='members$ | async as members'>
-  <p-dialog #memberDialog header='Change Members' [(visible)]="editMembersMode" [modal]='true' [dismissableMask]='dismissibleMask'>
-  <p-listbox [dataKey]='"id"' #listBox [checkbox]="true" (ngModelChange)='ch($event)'  [filterMatchMode]='"contains"' [options]="members" [(ngModel)]="selectedMembers" [multiple]="true"    [filter]="true" optionLabel="fullName" filterBy="label" [listStyle]="{'max-height':'250px'}">
+  <p-dialog  #memberDialog header='Change Members' [(visible)]="editMembersMode" [modal]='true' [dismissableMask]='dismissibleMask'>
+  <p-listbox *ngIf='initializeListBox' [dataKey]='"id"' #listBox [checkbox]="true" [filterMatchMode]='"contains"' [options]="members" [(ngModel)]="selectedMembers" [multiple]="true"    [filter]="true" optionLabel="fullName" filterBy="label" [listStyle]="{'max-height':'250px'}">
     <ng-template pTemplate="filter" let-options="options">
       <div class="p-inputgroup">
         <span class="p-inputgroup-addon"><i class="pi pi-search"></i></span>
-        <input type="text" pInputText placeholder="Filter" [(ngModel)]="filterValue" (keyup)="options.filter($event)">
+        <input type="text" pInputText placeholder="Filter" [(ngModel)]="filterValue" (keyup)="options.filter($event);">
       </div>
     </ng-template>
     <ng-template let-member pTemplate="item" >

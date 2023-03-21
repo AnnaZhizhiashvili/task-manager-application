@@ -15,7 +15,7 @@ import {
 } from '@angular/cdk/drag-drop';
 import { TaskItemInterface } from '../../../shared/models/task-item.interface';
 import { TasksService } from '../../../shared/services/tasks.service';
-import { BehaviorSubject, combineLatest, of, Subscription, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, debounceTime, forkJoin, merge, of, Subscription, tap } from 'rxjs';
 import { HelperService } from '../../../shared/services/helper.service';
 import { FormControl, Validators } from '@angular/forms';
 
@@ -85,18 +85,20 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   public onChangeDestination() {
-    const changeDestinationSub = combineLatest([
+    combineLatest([
       this.tasksService.taskAddedToList$,
       this.tasksService.taskRemovedFromList$,
     ])
       .pipe(
-        tap(([oldTask, newTask]) => {
+        debounceTime(0),
+        tap(([newTask, oldTask]) => {
           let newTasksList;
           if (oldTask.type === this.list.name) {
             newTasksList = this.tasks.filter(task => task.id !== oldTask.id);
             this.tasks = newTasksList;
             this.tasks$.next(newTasksList);
-          } else if (newTask.type === this.list.name) {
+          }
+          if (newTask.type === this.list.name) {
             newTasksList = [...this.tasks, newTask];
             this.tasks = newTasksList;
             this.tasks$.next(newTasksList);
@@ -105,7 +107,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
-    this.subscriptions.push(changeDestinationSub);
   }
   public addNewTask() {
     this.addNewCard = !this.addNewCard;

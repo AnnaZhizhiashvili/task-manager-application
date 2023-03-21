@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
   public members: UserInterface[];
   public isSubmitted = false;
   items: MenuItem[] = [];
-  backgroundColor$ = new BehaviorSubject('purple');
+  backgroundColor$ = new BehaviorSubject('white');
 
   constructor(
     private primengConfig: PrimeNGConfig,

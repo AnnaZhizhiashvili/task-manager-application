@@ -74,7 +74,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     };
     const sub = this.listsService
       .createList(newList)
-      .pipe(concatMap(() => this.getLists()))
+      .pipe(tap(() => this.taskLists$.next([...this.taskLists, newList])))
       .subscribe();
     this.subscriptions.push(sub);
   }
@@ -82,7 +82,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   deleteList(list) {
     const sub = this.listsService
       .deleteList(list)
-      .pipe(concatMap(() => this.getLists()))
+      .pipe(tap(() => this.taskLists$.next(this.taskLists.filter(item => list.id !== item.id))))
       .subscribe();
     this.subscriptions.push(sub);
   }
